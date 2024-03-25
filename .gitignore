@@ -1,0 +1,6 @@
+appsettings.Development.json
+appsettings.Production.json
+.idea/
+.DS_Store
+bin/
+obj/
