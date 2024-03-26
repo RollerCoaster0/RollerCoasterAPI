@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataTransferObjects;
 using RollerCoaster.Models;
@@ -19,8 +20,23 @@ public class AuthService(DataBaseContext dataBaseContext, ITokenService tokenSer
         if (isLoginAlreadyInUse)
             throw new InvalidLoginError("Такой логин уже в использовании");
         
-        // TODO: сделать валидацию логина
+        string loginPattern = @"^[a-zA-Z][a-zA-Z\d_]{3,15}$";
+        bool isLoginValid = Regex.IsMatch(registerDto.Login, loginPattern);
 
+        if (!isLoginValid)
+        {
+            throw new InvalidLoginError("Логин должен быть от 4 до 16 символов и состоять из латиницы");
+        }
+
+        string passwordPattern = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$";
+        bool isPasswordValid = Regex.IsMatch(registerDto.Password, passwordPattern);
+
+        if (!isPasswordValid)
+        {
+            throw new InvalidLoginError(
+                "Пароль должен содержать хотя бы 1 заглавную букву, специальный символ, цифру и быть не менее 8 символов");
+        }
+        
         var user = new User
         {
             Login = registerDto.Login,
@@ -44,7 +60,7 @@ public class AuthService(DataBaseContext dataBaseContext, ITokenService tokenSer
             throw new InvalidLoginError("Такого логина не нашли");
         
         if (user.PasswordHash != loginDto.Password) // TODO: сделать хэш
-            throw new InvalidLoginError("Пароль невернйы");
+            throw new InvalidLoginError("Пароль неверный");
 
         return tokenService.GenerateToken(user.Id);
     }
