@@ -10,8 +10,10 @@ public class InvalidLoginError(string message): Exception(message)
 {
     
 } 
-
-public class AuthService(DataBaseContext dataBaseContext, ITokenService tokenService) : IAuthService
+public class AuthService(
+    DataBaseContext dataBaseContext,
+    ITokenService tokenService,
+    PasswordHashService passwordHashService) : IAuthService
 {
     public async Task<CreatedUserMeta> Register(RegisterDTO registerDto)
     {
@@ -41,7 +43,7 @@ public class AuthService(DataBaseContext dataBaseContext, ITokenService tokenSer
         var user = new User
         {
             Login = registerDto.Login,
-            PasswordHash = registerDto.Password // TODO: сделать хэш
+            PasswordHash = passwordHashService.GenerateHash(registerDto.Password)
         };
         await dataBaseContext.Users.AddAsync(user);
         await dataBaseContext.SaveChangesAsync();
@@ -60,7 +62,7 @@ public class AuthService(DataBaseContext dataBaseContext, ITokenService tokenSer
         if (user is null)
             throw new InvalidLoginError("Такого логина не нашли");
         
-        if (user.PasswordHash != loginDto.Password) // TODO: сделать хэш
+        if (user.PasswordHash != passwordHashService.GenerateHash(loginDto.Password))
             throw new InvalidLoginError("Пароль неверный");
 
         return tokenService.GenerateToken(user.Id);
