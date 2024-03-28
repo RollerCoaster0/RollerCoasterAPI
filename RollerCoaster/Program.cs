@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RollerCoaster;
+using RollerCoaster.DataBase;
 using RollerCoaster.Services;
 
 var builder = WebApplication.CreateBuilder(args);

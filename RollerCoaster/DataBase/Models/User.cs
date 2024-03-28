@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RollerCoaster.Models;
+namespace RollerCoaster.DataBase.Models;
 
 public class User
 {

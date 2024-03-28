@@ -1,6 +1,5 @@
-namespace RollerCoaster.Models;
+namespace RollerCoaster.DataBase.Models.Game;
 
-// сделать скиллы
 public class NonPlayableCharacter
 {
     public required int GameId { get; set; }

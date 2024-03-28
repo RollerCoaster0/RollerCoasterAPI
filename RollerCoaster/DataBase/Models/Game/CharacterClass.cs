@@ -1,6 +1,5 @@
-namespace RollerCoaster.Models;
+namespace RollerCoaster.DataBase.Models.Game;
 
-// не забыть сделать скиллы
 public class CharacterClass 
 { 
     public required int GameId { get; set; }

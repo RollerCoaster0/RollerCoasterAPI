@@ -3,9 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using RollerCoaster.Services;
 
-namespace RollerCoaster;
+namespace RollerCoaster.Services;
 
 public class TokenService(IOptions<SiteConfiguration.JWTConfiguration> jwtConfiguration): ITokenService
 {

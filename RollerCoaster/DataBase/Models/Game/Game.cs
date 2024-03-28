@@ -1,6 +1,5 @@
-namespace RollerCoaster.Models;
+namespace RollerCoaster.DataBase.Models.Game;
 
-// реализовать скиллы для каждого класса и общие
 public class Game
 {
     public required string Name { get; set; }
@@ -10,4 +9,5 @@ public class Game
     public required List<Quest> Quests { get; set; }
     public required List<Item> Items { get; set; }
     public required List<NonPlayableCharacter> NonPlayableCharacters { get; set; }
+    public required List<Skill> Skills { get; set; }
 }

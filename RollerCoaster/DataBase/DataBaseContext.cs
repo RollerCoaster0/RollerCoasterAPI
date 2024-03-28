@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using RollerCoaster.Models;
+using RollerCoaster.DataBase.Models;
 
-namespace RollerCoaster;
+namespace RollerCoaster.DataBase;
 
 public sealed class DataBaseContext(DbContextOptions<DataBaseContext> options) : DbContext(options)
 {

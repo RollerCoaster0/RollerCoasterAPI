@@ -1,7 +1,8 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
-using RollerCoaster.DataTransferObjects;
-using RollerCoaster.Models;
+using RollerCoaster.DataBase;
+using RollerCoaster.DataBase.Models;
+using RollerCoaster.DataTransferObjects.Users;
 
 namespace RollerCoaster.Services;
 

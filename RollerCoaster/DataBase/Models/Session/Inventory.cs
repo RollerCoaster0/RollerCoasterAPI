@@ -1,5 +1,6 @@
-namespace RollerCoaster.Models;
+namespace RollerCoaster.DataBase.Models.Session;
 
+// TODO: доделать
 public class Inventory
 {
     public required int GameId { get; set; } // key

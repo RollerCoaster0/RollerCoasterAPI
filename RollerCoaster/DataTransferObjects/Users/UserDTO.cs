@@ -1,4 +1,4 @@
-namespace RollerCoaster.DataTransferObjects;
+namespace RollerCoaster.DataTransferObjects.Users;
 
 public class UserDTO
 {

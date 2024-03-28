@@ -1,4 +1,4 @@
-namespace RollerCoaster.Models;
+namespace RollerCoaster.DataBase.Models.Game;
 
 public class Quest
 {

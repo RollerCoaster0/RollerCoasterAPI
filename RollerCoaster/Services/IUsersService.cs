@@ -1,4 +1,4 @@
-using RollerCoaster.DataTransferObjects;
+using RollerCoaster.DataTransferObjects.Users;
 
 namespace RollerCoaster.Services;
 

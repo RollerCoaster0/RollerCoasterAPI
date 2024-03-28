@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects;
+using RollerCoaster.DataTransferObjects.Users;
 using RollerCoaster.Services;
 
 namespace RollerCoaster.Controllers;
