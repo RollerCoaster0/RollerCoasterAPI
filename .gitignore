@@ -1,6 +1,9 @@
 appsettings.Development.json
 appsettings.Production.json
+appsettings.Release.json
+appsettings.DockerTesting.json
 .idea/
 .DS_Store
 bin/
 obj/
+*.DotSettings.*
