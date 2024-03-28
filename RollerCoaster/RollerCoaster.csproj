@@ -15,4 +15,10 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Properties\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="Properties\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="Properties\obj\RollerCoaster.csproj.nuget.dgspec.json" />
+    </ItemGroup>
+
 </Project>

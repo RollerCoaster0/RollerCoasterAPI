@@ -4,9 +4,9 @@ namespace RollerCoaster.Services;
 
 public interface IGameService
 {
-    Task<CreateGameDTO?> Get(int id);
+    Task<GameDTO?> Get(int id);
     
-    Task<int> Create(CreateGameDTO game);
+    Task<int> Create(GameDTO game);
 
     Task Delete(int id);
 }
