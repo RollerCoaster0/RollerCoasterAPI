@@ -13,7 +13,7 @@ public class InvalidLoginError(string message): Exception(message)
 public class AuthService(
     DataBaseContext dataBaseContext,
     ITokenService tokenService,
-    PasswordHashService passwordHashService) : IAuthService
+    IPasswordHashService passwordHashService) : IAuthService
 {
     public async Task<CreatedUserMeta> Register(RegisterDTO registerDto)
     {
