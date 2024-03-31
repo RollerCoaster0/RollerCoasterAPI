@@ -31,7 +31,7 @@ public class AuthService(
             throw new InvalidLoginError("Логин должен быть от 4 до 16 символов и состоять из латиницы");
         }
 
-        string passwordPattern = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$";
+        string passwordPattern = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^+=]).*$";
         bool isPasswordValid = Regex.IsMatch(registerDto.Password, passwordPattern);
 
         if (!isPasswordValid)
