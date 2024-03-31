@@ -4,3 +4,5 @@ appsettings.Production.json
 .DS_Store
 bin/
 obj/
+RollerCoaster.sln.DotSettings.user
+appsettings.DockerTesting.json
