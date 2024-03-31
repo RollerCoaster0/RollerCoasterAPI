@@ -2,6 +2,7 @@ namespace RollerCoaster.DataBase.Models.Game;
 
 public class Game
 {
+    public int Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required List<Location> Locations { get; set; }
