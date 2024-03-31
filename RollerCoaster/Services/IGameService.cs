@@ -6,7 +6,7 @@ public interface IGameService
 {
     Task<GameDTO?> Get(int id);
     
-    Task<int> Create(GameDTO game);
+    Task<int> Create(GameDTO gameDto);
 
     Task Delete(int id);
 }
