@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<SiteConfiguration>(builder.Configuration);
 builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configuration.GetSection("JWT"));
 
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -54,6 +55,9 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
 });
 
 var app = builder.Build();
+
+app.UseStatusCodePages();
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
 {
