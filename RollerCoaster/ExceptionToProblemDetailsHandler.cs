@@ -4,7 +4,10 @@ using RollerCoaster.Services.Abstractions.Common;
 
 namespace RollerCoaster;
 
-public class ExceptionToProblemDetailsHandler : Microsoft.AspNetCore.Diagnostics.IExceptionHandler
+//
+
+public class ExceptionToProblemDetailsHandler(ILogger<ExceptionToProblemDetailsHandler> logger):
+    Microsoft.AspNetCore.Diagnostics.IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
@@ -28,13 +31,17 @@ public class ExceptionToProblemDetailsHandler : Microsoft.AspNetCore.Diagnostics
                 Title = providedDataIsInvalidErrorException.Message,
                 Status = (int)HttpStatusCode.Forbidden
             }, cancellationToken: cancellationToken);
-        
+
         else
+        {
+            logger.LogError(exception, "Произошла неизвестная ошибка");
+            
             await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
             {
                 Title = "Произошла неизвестная ошибка. Попробуйте позже",
                 Status = (int)HttpStatusCode.InternalServerError
             }, cancellationToken: cancellationToken);
+        }
  
         return true;
     }
