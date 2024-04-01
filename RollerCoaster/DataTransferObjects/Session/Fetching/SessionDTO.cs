@@ -1,10 +1,8 @@
-namespace RollerCoaster.DataBase.Models.Session;
+namespace RollerCoaster.DataTransferObjects.Session.Fetching;
 
-// сессия представляет собой запущенную игру
-// TODO: доделать
-public class Session
+public class SessionDTO
 {
-    public int Id { get; set; }
+    public required int Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required int CreatorId { get; set; }

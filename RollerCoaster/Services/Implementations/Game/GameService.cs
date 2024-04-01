@@ -28,6 +28,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
             Id = game.Id,
             Name = game.Name,
             Description = game.Description,
+            CreatorId = game.CreatorId,
             
             Locations = game.Locations.Select(l => new LocationDTO
             {

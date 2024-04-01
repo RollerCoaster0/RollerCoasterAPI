@@ -3,7 +3,7 @@ namespace RollerCoaster.DataBase.Models.Session;
 // TODO: доделать
 public class Attributes
 {
-    public int PlayerId { get; set; }
+    public int Id { get; set; }
     public int Health { get; set; }
     public int Strength { get; set; }
     public int Agility { get; set; }
