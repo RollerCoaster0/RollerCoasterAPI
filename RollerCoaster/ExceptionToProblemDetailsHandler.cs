@@ -4,8 +4,6 @@ using RollerCoaster.Services.Abstractions.Common;
 
 namespace RollerCoaster;
 
-//
-
 public class ExceptionToProblemDetailsHandler(ILogger<ExceptionToProblemDetailsHandler> logger):
     Microsoft.AspNetCore.Diagnostics.IExceptionHandler
 {

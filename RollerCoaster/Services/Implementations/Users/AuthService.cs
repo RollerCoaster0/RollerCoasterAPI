@@ -19,7 +19,7 @@ public class AuthService(
             .Users.AnyAsync(u => u.Login == registerDto.Login);
         
         if (isLoginAlreadyInUse)
-            throw new LoginAlreadyInUseError("Такой логин уже в использовании");
+            throw new ProvidedDataIsInvalidError("Такой логин уже в использовании");
         
         const string loginPattern = @"^[a-zA-Z][a-zA-Z\d_]{3,15}$";
         bool isLoginValid = Regex.IsMatch(registerDto.Login, loginPattern);
@@ -56,7 +56,7 @@ public class AuthService(
         var user = await dataBaseContext.Users.FirstOrDefaultAsync(u => u.Login == loginDto.Login);
         
         if (user is null || user.PasswordHash != passwordHashService.GenerateHash(loginDto.Password))
-            throw new InvalidLoginCredentialsError("Указаны неверные данные для авторизации.");
+            throw new AccessDeniedError("Указаны неверные данные для авторизации.");
 
         return tokenService.GenerateToken(user.Id);
     }
