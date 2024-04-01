@@ -28,6 +28,15 @@ public class QuestService(DataBaseContext dataBaseContext): IQuestService
 
     public async Task<int> Create(int accessorId, QuestCreationDTO questCreationDto)
     {
+        if (questCreationDto.Name.Length > 50)
+            throw new ProvidedDataIsInvalidError("Название слишком длинное");
+        
+        if (questCreationDto.Description.Length > 512)
+            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
+        
+        if (questCreationDto.HiddenDescription.Length > 512)
+            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
+        
         var game = await dataBaseContext.Games.FindAsync(questCreationDto.GameId);
         
         if (game is null)

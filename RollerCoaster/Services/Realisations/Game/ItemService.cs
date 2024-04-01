@@ -28,6 +28,12 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
 
     public async Task<int> Create(int accessorId, ItemCreationDTO itemCreationDto)
     {
+        if (itemCreationDto.Name.Length > 50)
+            throw new ProvidedDataIsInvalidError("Название слишком длинное");
+        
+        if (itemCreationDto.Description.Length > 512)
+            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
+        
         var game = await dataBaseContext.Games.FindAsync(itemCreationDto.GameId);
         
         if (game is null)
