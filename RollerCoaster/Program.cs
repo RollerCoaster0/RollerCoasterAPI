@@ -41,12 +41,18 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
     options.UseNpgsql(builder.Configuration["DataBase:ConnString"]);
 });
 
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
+{
+    builder.AddCors();
+}
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin());
 }
 
 app.UseAuthorization();
