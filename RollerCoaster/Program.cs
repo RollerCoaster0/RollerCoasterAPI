@@ -17,6 +17,7 @@ builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configura
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IPasswordHashService, PasswordHashService>();
@@ -51,11 +52,6 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
 {
     options.UseNpgsql(builder.Configuration["DataBase:ConnString"]);
 });
-
-if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
-{
-    builder.AddCors();
-}
 
 var app = builder.Build();
 
