@@ -11,8 +11,6 @@ using RollerCoaster.Services.Realisations.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Console.WriteLine("123");
-
 builder.Services.Configure<SiteConfiguration>(builder.Configuration);
 builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configuration.GetSection("JWT"));
 

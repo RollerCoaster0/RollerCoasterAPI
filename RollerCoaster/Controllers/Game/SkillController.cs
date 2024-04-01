@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class SkillController(ISkillService skillService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] SkillCreationDTO skillCreationDto)
+    public async Task<IActionResult> Create([FromQuery] SkillCreationDTO skillCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdSkillId = await skillService.Create(int.Parse(userId), skillCreationDto);

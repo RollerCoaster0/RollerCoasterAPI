@@ -10,7 +10,7 @@ namespace RollerCoaster.Controllers.Session;
 public class ChatController(IChatService chatService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Send(SendMessageDTO sendMessageDto)
+    public async Task<IActionResult> Send([FromQuery] SendMessageDTO sendMessageDto)
     {
         try
         {
@@ -28,7 +28,7 @@ public class ChatController(IChatService chatService) : ControllerBase
     }
 
     [HttpGet("last")]
-    public async Task<IActionResult> GetLast(GetLastMessagesDTO getLastMessagesDto)
+    public async Task<IActionResult> GetLast([FromQuery] GetLastMessagesDTO getLastMessagesDto)
     {
         try
         {

@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class QuestController(IQuestService questService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] QuestCreationDTO questCreationDto)
+    public async Task<IActionResult> Create([FromQuery] QuestCreationDTO questCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdQuestId = await questService.Create(int.Parse(userId), questCreationDto);

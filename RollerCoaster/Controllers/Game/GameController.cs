@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class GameController(IGameService gameService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] GameCreationDTO gameCreationDto)
+    public async Task<IActionResult> Create([FromQuery] GameCreationDTO gameCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdGameId = await gameService.Create(int.Parse(userId), gameCreationDto);

@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class CharacterClassController(ICharacterClassService characterClassService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] CharacterClassCreationDTO characterClassCreationDto)
+    public async Task<IActionResult> Create([FromQuery] CharacterClassCreationDTO characterClassCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdCharacterClassId = await characterClassService.Create(int.Parse(userId), characterClassCreationDto);

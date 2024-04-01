@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class LocationController(ILocationService locationService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] LocationCreationDTO locationCreationDto)
+    public async Task<IActionResult> Create([FromQuery] LocationCreationDTO locationCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdLocationId = await locationService.Create(int.Parse(userId), locationCreationDto);

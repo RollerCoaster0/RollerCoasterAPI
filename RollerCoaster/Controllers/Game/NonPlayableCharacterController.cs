@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class NonPlayableCharacterController(INonPlayableCharacterService nonPlayableCharacterService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
+    public async Task<IActionResult> Create([FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdNpcId = await nonPlayableCharacterService.Create(int.Parse(userId), nonPlayableCharacterCreationDto);

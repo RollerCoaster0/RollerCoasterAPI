@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 public class ItemController(IItemService itemService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody, FromQuery] ItemCreationDTO itemCreationDto)
+    public async Task<IActionResult> Create([FromQuery] ItemCreationDTO itemCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdItemId = await itemService.Create(int.Parse(userId), itemCreationDto);

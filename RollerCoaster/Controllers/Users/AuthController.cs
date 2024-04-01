@@ -9,7 +9,7 @@ namespace RollerCoaster.Controllers.Users;
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody, FromQuery] RegisterDTO registerDto)
+    public async Task<IActionResult> Register([FromQuery] RegisterDTO registerDto)
     {
         try
         {
@@ -27,7 +27,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody, FromQuery] LoginDTO loginDto)
+    public async Task<IActionResult> Login([FromQuery] LoginDTO loginDto)
     {
         try
         {
