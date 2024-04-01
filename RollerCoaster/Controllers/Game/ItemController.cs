@@ -15,10 +15,10 @@ public class ItemController(IItemService itemService): ControllerBase
         try
         {
             var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var createdLocationId = await itemService.Create(int.Parse(userId), itemCreationDto);
+            var createdItemId = await itemService.Create(int.Parse(userId), itemCreationDto);
             return Created("", new
             {
-                Id = createdLocationId
+                Id = createdItemId
             });
         }
         catch (NotFoundError e)
@@ -55,8 +55,8 @@ public class ItemController(IItemService itemService): ControllerBase
     {
         try
         {
-            var locationDto = await itemService.Get(id);
-            return Ok(locationDto);
+            var itemDto = await itemService.Get(id);
+            return Ok(itemDto);
         }
         catch (NotFoundError e)
         {

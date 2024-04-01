@@ -15,10 +15,10 @@ public class SkillController(ISkillService skillService): ControllerBase
         try
         {
             var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var createdNpcId = await skillService.Create(int.Parse(userId), skillCreationDto);
+            var createdSkillId = await skillService.Create(int.Parse(userId), skillCreationDto);
             return Created("", new
             {
-                Id = createdNpcId
+                Id = createdSkillId
             });
         }
         catch (NotFoundError e)
@@ -55,8 +55,8 @@ public class SkillController(ISkillService skillService): ControllerBase
     {
         try
         {
-            var locationDto = await skillService.Get(id);
-            return Ok(locationDto);
+            var skillDto = await skillService.Get(id);
+            return Ok(skillDto);
         }
         catch (NotFoundError e)
         {

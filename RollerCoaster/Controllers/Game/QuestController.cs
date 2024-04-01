@@ -15,10 +15,10 @@ public class QuestController(IQuestService questService): ControllerBase
         try
         {
             var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var createdNpcId = await questService.Create(int.Parse(userId), questCreationDto);
+            var createdQuestId = await questService.Create(int.Parse(userId), questCreationDto);
             return Created("", new
             {
-                Id = createdNpcId
+                Id = createdQuestId
             });
         }
         catch (NotFoundError e)
@@ -55,8 +55,8 @@ public class QuestController(IQuestService questService): ControllerBase
     {
         try
         {
-            var locationDto = await questService.Get(id);
-            return Ok(locationDto);
+            var questDto = await questService.Get(id);
+            return Ok(questDto);
         }
         catch (NotFoundError e)
         {

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
 
@@ -16,10 +15,10 @@ public class CharacterClassController(ICharacterClassService characterClassServi
         try
         {
             var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var createdNpcId = await characterClassService.Create(int.Parse(userId), characterClassCreationDto);
+            var createdCharacterClassId = await characterClassService.Create(int.Parse(userId), characterClassCreationDto);
             return Created("", new
             {
-                Id = createdNpcId
+                Id = createdCharacterClassId
             });
         }
         catch (NotFoundError e)
@@ -56,8 +55,8 @@ public class CharacterClassController(ICharacterClassService characterClassServi
     {
         try
         {
-            var locationDto = await characterClassService.Get(id);
-            return Ok(locationDto);
+            var characterClassDto = await characterClassService.Get(id);
+            return Ok(characterClassDto);
         }
         catch (NotFoundError e)
         {

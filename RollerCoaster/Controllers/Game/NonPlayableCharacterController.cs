@@ -57,8 +57,8 @@ public class NonPlayableCharacterController(INonPlayableCharacterService nonPlay
     {
         try
         {
-            var locationDto = await nonPlayableCharacterService.Get(id);
-            return Ok(locationDto);
+            var npcDto = await nonPlayableCharacterService.Get(id);
+            return Ok(npcDto);
         }
         catch (NotFoundError e)
         {
