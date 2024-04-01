@@ -8,8 +8,13 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+            args:
+                BUILD_CONFIGURATION: Development
         ports:
             - "5050:8080"
+        environment:
+            ASPNETCORE_ENVIRONMENT: DockerTesting
+            ASPNETCORE_URLS: http://localhost:8080
     db:
         image: postgres
         environment:
