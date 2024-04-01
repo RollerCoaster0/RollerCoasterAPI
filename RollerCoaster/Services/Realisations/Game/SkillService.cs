@@ -28,6 +28,12 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
 
     public async Task<int> Create(int accessorId, SkillCreationDTO skillCreationDto)
     {
+        if (skillCreationDto.Name.Length > 50)
+            throw new ProvidedDataIsInvalidError("Название слишком длинное");
+        
+        if (skillCreationDto.Description.Length > 512)
+            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
+        
         var game = await dataBaseContext.Games.FindAsync(skillCreationDto.GameId);
         
         if (game is null)

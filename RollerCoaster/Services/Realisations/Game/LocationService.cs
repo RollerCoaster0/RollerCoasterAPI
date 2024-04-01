@@ -29,6 +29,12 @@ public class LocationService(DataBaseContext dataBaseContext): ILocationService
 
     public async Task<int> Create(int accessorId, LocationCreationDTO locationCreationDto)
     {
+        if (locationCreationDto.Name.Length > 50)
+            throw new ProvidedDataIsInvalidError("Название слишком длинное");
+        
+        if (locationCreationDto.Description.Length > 512)
+            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
+        
         var game = await dataBaseContext.Games.FindAsync(locationCreationDto.GameId);
         
         if (game is null)

@@ -85,6 +85,12 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
 
     public async Task<int> Create(int creatorId, GameCreationDTO gameCreationDto)
     {
+        if (gameCreationDto.Name.Length > 50)
+            throw new ProvidedDataIsInvalidError("Название слишком длинное");
+        
+        if (gameCreationDto.Description.Length > 512)
+            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
+        
         var game = new DataBase.Models.Game.Game
         {
             Description = gameCreationDto.Description,

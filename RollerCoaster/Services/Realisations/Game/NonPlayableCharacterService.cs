@@ -27,6 +27,9 @@ public class NonPlayableCharacterService(DataBaseContext dataBaseContext): INonP
 
     public async Task<int> Create(int accessorId, NonPlayableCharacterCreationDTO npcCreationDto)
     {
+        if (npcCreationDto.Name.Length > 50)
+            throw new ProvidedDataIsInvalidError("Название слишком длинное");
+        
         var game = await dataBaseContext.Games.FindAsync(npcCreationDto.GameId);
         
         if (game is null)
