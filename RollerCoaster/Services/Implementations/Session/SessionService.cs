@@ -19,7 +19,7 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
             throw new NotFoundError("Сессия не найдена");
         }
 
-        return new SessionDTO()
+        return new SessionDTO
         {
             Id = session.Id,
             Name = session.Name,

@@ -27,12 +27,6 @@ public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterC
 
     public async Task<int> Create(int accessorId, CharacterClassCreationDTO characterClassCreationDto)
     {
-        if (characterClassCreationDto.Name.Length > 50)
-            throw new ProvidedDataIsInvalidError("Название слишком длинное");
-        
-        if (characterClassCreationDto.Description.Length > 512)
-            throw new ProvidedDataIsInvalidError("Описание слишком длинное");
-        
         var game = await dataBaseContext.Games.FindAsync(characterClassCreationDto.GameId);
         
         if (game is null)

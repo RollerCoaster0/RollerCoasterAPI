@@ -11,9 +11,6 @@ public class ChatService(DataBaseContext dataBaseContext) : IChatService
 {
     public async Task<int> SendMessage(int senderId, SendMessageDTO sendMessageDto)
     {
-        if (sendMessageDto.Text.Length > 512)
-            throw new ProvidedDataIsInvalidError("Сообщение слишком длинное");
-
         var message = new Message
         {
             SessionId = sendMessageDto.SessionId, // TODO:add validation
@@ -29,9 +26,6 @@ public class ChatService(DataBaseContext dataBaseContext) : IChatService
 
     public async Task<List<MessageDTO>> GetLastMessages(GetLastMessagesDTO getLastMessagesDto)
     {
-        if (getLastMessagesDto.Count > 200)
-            throw new ProvidedDataIsInvalidError("Число сообщений слишком больше");
-
         var messages = await dataBaseContext.Messages
             .Where(m => m.SessionId == getLastMessagesDto.SessionId) // TODO:add validation
             .OrderByDescending(m => m.Id)
