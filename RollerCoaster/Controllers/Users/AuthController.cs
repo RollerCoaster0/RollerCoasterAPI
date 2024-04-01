@@ -4,7 +4,7 @@ using RollerCoaster.Services.Abstractions.Users;
 
 namespace RollerCoaster.Controllers.Users;
 
-[Route("[controller]")]
+[Route("auth")]
 [ApiController]
 public class AuthController(IAuthService authService) : ControllerBase
 {

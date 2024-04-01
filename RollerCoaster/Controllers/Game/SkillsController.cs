@@ -4,18 +4,18 @@ using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
 
-[Route("[controller]")]
+[Route("skills")]
 [ApiController]
-public class LocationController(ILocationService locationService): ControllerBase
+public class SkillsController(ISkillService skillService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromQuery] LocationCreationDTO locationCreationDto)
+    public async Task<IActionResult> Create([FromQuery] SkillCreationDTO skillCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        var createdLocationId = await locationService.Create(int.Parse(userId), locationCreationDto);
+        var createdSkillId = await skillService.Create(int.Parse(userId), skillCreationDto);
         return Created("", new
         {
-            Id = createdLocationId
+            Id = createdSkillId
         });
     }
     
@@ -23,14 +23,14 @@ public class LocationController(ILocationService locationService): ControllerBas
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        await locationService.Delete(int.Parse(userId), id);
+        await skillService.Delete(int.Parse(userId), id);
         return Ok();
     }
     
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        var locationDto = await locationService.Get(id);
-        return Ok(locationDto);
+        var skillDto = await skillService.Get(id);
+        return Ok(skillDto);
     }
 }

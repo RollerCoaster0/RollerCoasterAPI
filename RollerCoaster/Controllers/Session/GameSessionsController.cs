@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RollerCoaster.Controllers.Session;
 
-[Route("[controller]")]
+[Route("sessions")]
 [ApiController]
-public class GameSessionController: ControllerBase
+public class GameSessionsController: ControllerBase
 {
     
 }

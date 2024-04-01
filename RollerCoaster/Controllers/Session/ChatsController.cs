@@ -5,9 +5,9 @@ using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;
 
-[Route("[controller]")]
+[Route("chats")]
 [ApiController]
-public class ChatController(IChatService chatService) : ControllerBase
+public class ChatsController(IChatService chatService) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Send([FromQuery] SendMessageDTO sendMessageDto)

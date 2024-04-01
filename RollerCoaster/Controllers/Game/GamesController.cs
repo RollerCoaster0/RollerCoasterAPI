@@ -4,18 +4,18 @@ using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
 
-[Route("[controller]")]
+[Route("games")]
 [ApiController]
-public class ItemController(IItemService itemService): ControllerBase
+public class GamesController(IGameService gameService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromQuery] ItemCreationDTO itemCreationDto)
+    public async Task<IActionResult> Create([FromQuery] GameCreationDTO gameCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        var createdItemId = await itemService.Create(int.Parse(userId), itemCreationDto);
+        var createdGameId = await gameService.Create(int.Parse(userId), gameCreationDto);
         return Created("", new
         {
-            Id = createdItemId
+            Id = createdGameId
         });
     }
     
@@ -23,14 +23,14 @@ public class ItemController(IItemService itemService): ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        await itemService.Delete(int.Parse(userId), id);
+        await gameService.Delete(int.Parse(userId), id);
         return Ok();
     }
     
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        var itemDto = await itemService.Get(id);
-        return Ok(itemDto);
+        var gameDto = await gameService.Get(id);
+        return Ok(gameDto);
     }
 }

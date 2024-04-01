@@ -4,18 +4,18 @@ using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
 
-[Route("npc")]
+[Route("quests")]
 [ApiController]
-public class NonPlayableCharacterController(INonPlayableCharacterService nonPlayableCharacterService): ControllerBase
+public class QuestsController(IQuestService questService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
+    public async Task<IActionResult> Create([FromQuery] QuestCreationDTO questCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        var createdNpcId = await nonPlayableCharacterService.Create(int.Parse(userId), nonPlayableCharacterCreationDto);
+        var createdQuestId = await questService.Create(int.Parse(userId), questCreationDto);
         return Created("", new
         {
-            Id = createdNpcId
+            Id = createdQuestId
         });
     }
     
@@ -23,14 +23,14 @@ public class NonPlayableCharacterController(INonPlayableCharacterService nonPlay
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        await nonPlayableCharacterService.Delete(int.Parse(userId), id);
+        await questService.Delete(int.Parse(userId), id);
         return Ok();
     }
     
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        var npcDto = await nonPlayableCharacterService.Get(id);
-        return Ok(npcDto);
+        var questDto = await questService.Get(id);
+        return Ok(questDto);
     }
 }
