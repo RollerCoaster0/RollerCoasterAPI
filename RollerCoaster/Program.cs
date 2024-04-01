@@ -63,7 +63,11 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTest
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin());
+    app.UseCors(policyBuilder => policyBuilder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
 }
 
 app.UseAuthorization();
