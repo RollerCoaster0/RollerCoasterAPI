@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
-using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
-using RollerCoaster.Services.Realisations.Game;
 
 namespace RollerCoaster.Controllers.Game;
 
@@ -12,57 +9,28 @@ namespace RollerCoaster.Controllers.Game;
 public class NonPlayableCharacterController(INonPlayableCharacterService nonPlayableCharacterService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
+    public async Task<IActionResult> Create([FromBody, FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
     {
-        try
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var createdNpcId = await nonPlayableCharacterService.Create(int.Parse(userId), nonPlayableCharacterCreationDto);
+        return Created("", new
         {
-            var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var createdNpcId = await nonPlayableCharacterService.Create(int.Parse(userId), nonPlayableCharacterCreationDto);
-            return Created("", new
-            {
-                Id = createdNpcId
-            });
-        }
-        catch (NotFoundError e)
-        {
-            return NotFound(new {e.Message});
-        }
-        catch (AccessDeniedError e)
-        {
-            return Forbid(e.Message);
-        }
+            Id = createdNpcId
+        });
     }
     
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            await nonPlayableCharacterService.Delete(int.Parse(userId), id);
-            return Ok();
-        }
-        catch (NotFoundError e)
-        {
-            return NotFound(new {e.Message});
-        }
-        catch (AccessDeniedError e)
-        {
-            return Forbid(e.Message);
-        }
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        await nonPlayableCharacterService.Delete(int.Parse(userId), id);
+        return Ok();
     }
     
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        try
-        {
-            var npcDto = await nonPlayableCharacterService.Get(id);
-            return Ok(npcDto);
-        }
-        catch (NotFoundError e)
-        {
-            return NotFound(new { e.Message });
-        }
+        var npcDto = await nonPlayableCharacterService.Get(id);
+        return Ok(npcDto);
     }
 }

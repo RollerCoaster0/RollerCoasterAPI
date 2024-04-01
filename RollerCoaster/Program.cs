@@ -11,10 +11,13 @@ using RollerCoaster.Services.Realisations.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine("123");
+
 builder.Services.Configure<SiteConfiguration>(builder.Configuration);
 builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ExceptionToProblemDetailsHandler>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -66,8 +69,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTest
     app.UseCors(policyBuilder => policyBuilder
         .AllowAnyOrigin()
         .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials());
+        .AllowAnyHeader());
 }
 
 app.UseAuthorization();

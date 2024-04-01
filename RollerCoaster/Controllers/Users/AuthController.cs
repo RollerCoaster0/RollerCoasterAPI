@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Users;
-using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Users;
 
 namespace RollerCoaster.Controllers.Users;
@@ -10,7 +9,7 @@ namespace RollerCoaster.Controllers.Users;
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDTO registerDto)
+    public async Task<IActionResult> Register([FromBody, FromQuery] RegisterDTO registerDto)
     {
         try
         {
@@ -25,14 +24,10 @@ public class AuthController(IAuthService authService) : ControllerBase
         {
             return BadRequest(new { e.Message });
         }
-        catch (ProvidedDataIsInvalidError e)
-        {
-            return BadRequest(new { e.Message });
-        }
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDTO loginDto)
+    public async Task<IActionResult> Login([FromBody, FromQuery] LoginDTO loginDto)
     {
         try
         {

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
@@ -10,57 +9,28 @@ namespace RollerCoaster.Controllers.Game;
 public class QuestController(IQuestService questService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(QuestCreationDTO questCreationDto)
+    public async Task<IActionResult> Create([FromBody, FromQuery] QuestCreationDTO questCreationDto)
     {
-        try
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var createdQuestId = await questService.Create(int.Parse(userId), questCreationDto);
+        return Created("", new
         {
-            var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var createdQuestId = await questService.Create(int.Parse(userId), questCreationDto);
-            return Created("", new
-            {
-                Id = createdQuestId
-            });
-        }
-        catch (NotFoundError e)
-        {
-            return NotFound(new {e.Message});
-        }
-        catch (AccessDeniedError e)
-        {
-            return Forbid(e.Message);
-        }
+            Id = createdQuestId
+        });
     }
     
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        try
-        {
-            var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            await questService.Delete(int.Parse(userId), id);
-            return Ok();
-        }
-        catch (NotFoundError e)
-        {
-            return NotFound(new {e.Message});
-        }
-        catch (AccessDeniedError e)
-        {
-            return Forbid(e.Message);
-        }
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        await questService.Delete(int.Parse(userId), id);
+        return Ok();
     }
     
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        try
-        {
-            var questDto = await questService.Get(id);
-            return Ok(questDto);
-        }
-        catch (NotFoundError e)
-        {
-            return NotFound(new { e.Message });
-        }
+        var questDto = await questService.Get(id);
+        return Ok(questDto);
     }
 }
