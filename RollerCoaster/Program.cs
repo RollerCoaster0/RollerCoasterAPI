@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RollerCoaster;
 using RollerCoaster.DataBase;
-using RollerCoaster.Services;
+using RollerCoaster.Services.Abstractions.Game;
+using RollerCoaster.Services.Abstractions.Users;
+using RollerCoaster.Services.Realisations.Game;
+using RollerCoaster.Services.Realisations.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +19,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPasswordHashService, PasswordHashService>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
-builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+builder.Services.AddScoped<IQuestService, QuestService>();
+builder.Services.AddScoped<INonPlayableCharacterService, NonPlayableCharacterService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<ISkillService, SkillService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<ICharacterClassService, CharacterClassService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
