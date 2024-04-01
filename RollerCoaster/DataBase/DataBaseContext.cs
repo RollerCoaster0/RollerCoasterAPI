@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase.Models;
 using RollerCoaster.DataBase.Models.Game;
+using RollerCoaster.DataBase.Models.Session;
 using RollerCoaster.DataBase.Models.Session.Chat;
+using NonPlayableCharacter = RollerCoaster.DataBase.Models.Game.NonPlayableCharacter;
 
 namespace RollerCoaster.DataBase;
 
@@ -16,6 +18,11 @@ public sealed class DataBaseContext: DbContext
     public required DbSet<NonPlayableCharacter> NonPlayableCharacters { get; set; }
     public required DbSet<CharacterClass> CharacterClasses { get; set; }
     public required DbSet<Quest> Quests { get; set; }
+    public required DbSet<Attributes> Attributes { get; set; }
+    public required DbSet<Player> Players { get; set; }
+    public required DbSet<ActiveNonPlayableCharacter> ActiveNonPlayableCharacters { get; set; }
+    public required DbSet<Inventory> Inventories { get; set; }
+    public required DbSet<Session> Sessions { get; set; }
 
     public DataBaseContext(DbContextOptions<DataBaseContext> options): base(options)
     {

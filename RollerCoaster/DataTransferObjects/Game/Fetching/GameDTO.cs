@@ -3,6 +3,9 @@ namespace RollerCoaster.DataTransferObjects.Game.Fetching;
 public class GameDTO
 {
     public required int Id { get; set; }
+    
+    public required int CreatorId { get; set; }
+
     public required string Name { get; set; }
     public required string Description { get; set; }
     public required List<LocationDTO> Locations { get; set; }
