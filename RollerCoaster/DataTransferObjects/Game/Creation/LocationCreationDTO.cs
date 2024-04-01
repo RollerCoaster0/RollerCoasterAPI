@@ -1,9 +1,8 @@
-﻿namespace RollerCoaster.DataTransferObjects.Game;
+﻿namespace RollerCoaster.DataTransferObjects.Game.Creation;
 
 public class LocationCreationDTO
 {
-    // уникальное поле для идентификации в запросе, ничего общего с БД не имеет
-    public required string TemporaryResolutionId { get; set; }
+    public required int GameId { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
 }

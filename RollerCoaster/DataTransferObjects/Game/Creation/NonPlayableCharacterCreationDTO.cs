@@ -1,8 +1,8 @@
-﻿namespace RollerCoaster.DataTransferObjects.Game;
+﻿namespace RollerCoaster.DataTransferObjects.Game.Creation;
 
 public class NonPlayableCharacterCreationDTO 
 {
+    public required int GameId { get; set; }
     public required string Name { get; set; }
-    // здесь указывается идентификатор локации, в которой будет изначально "заспавнен" нпс
-    public required string BaseLocationTemporaryResolutionId { get; set; }
+    public required int BaseLocationId { get; set; }
 }

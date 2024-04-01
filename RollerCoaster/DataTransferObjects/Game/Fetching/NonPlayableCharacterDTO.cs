@@ -1,4 +1,4 @@
-﻿namespace RollerCoaster.DataTransferObjects.Game;
+﻿namespace RollerCoaster.DataTransferObjects.Game.Fetching;
 
 public class NonPlayableCharacterDTO 
 {
