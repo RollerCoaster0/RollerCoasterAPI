@@ -43,7 +43,7 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();
