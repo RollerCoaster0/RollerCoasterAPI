@@ -13,7 +13,7 @@ public class AuthService(
     ITokenService tokenService,
     IPasswordHashService passwordHashService) : IAuthService
 {
-    public async Task<CreatedUserMeta> Register(RegisterDTO registerDto)
+    public async Task<AuthorizedUserMeta> Register(RegisterDTO registerDto)
     {
         bool isLoginAlreadyInUse = await dataBaseContext
             .Users.AnyAsync(u => u.Login == registerDto.Login);
@@ -44,20 +44,24 @@ public class AuthService(
         await dataBaseContext.Users.AddAsync(user);
         await dataBaseContext.SaveChangesAsync();
 
-        return new CreatedUserMeta
+        return new AuthorizedUserMeta
         {
-            UserId = user.Id,
-            AccessToken = tokenService.GenerateToken(user.Id)
+            Id = user.Id,
+            Token = tokenService.GenerateToken(user.Id)
         };
     }
 
-    public async Task<string> Login(LoginDTO loginDto)
+    public async Task<AuthorizedUserMeta> Login(LoginDTO loginDto)
     {
         var user = await dataBaseContext.Users.FirstOrDefaultAsync(u => u.Login == loginDto.Login);
         
         if (user is null || user.PasswordHash != passwordHashService.GenerateHash(loginDto.Password))
             throw new AccessDeniedError("Указаны неверные данные для авторизации.");
 
-        return tokenService.GenerateToken(user.Id);
+        return new AuthorizedUserMeta
+        {
+            Id = user.Id,
+            Token = tokenService.GenerateToken(user.Id)
+        };
     }
 }

@@ -9,23 +9,20 @@ namespace RollerCoaster.Controllers.Users;
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromQuery] RegisterDTO registerDto)
+    [ProducesResponseType<AuthorizedUserMeta>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<AuthorizedUserMeta>> Register([FromQuery] RegisterDTO registerDto)
     {
-        var createdUser = await authService.Register(registerDto);
-        return Created("", new
-        {
-            Token = createdUser.AccessToken,
-            Id = createdUser.UserId
-        });
+        var authorizedUser = await authService.Register(registerDto);
+        return Created("", authorizedUser);
     }
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromQuery] LoginDTO loginDto)
+    [ProducesResponseType<AuthorizedUserMeta>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<AuthorizedUserMeta>> Login([FromQuery] LoginDTO loginDto)
     {
-        var token = await authService.Login(loginDto);
-        return Ok(new
-        {
-            Token = token
-        });
+        var authorizedUser = await authService.Login(loginDto);
+        return Ok(authorizedUser);
     }
 }

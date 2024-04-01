@@ -2,15 +2,15 @@ using RollerCoaster.DataTransferObjects.Users;
 
 namespace RollerCoaster.Services.Abstractions.Users;
 
-public struct CreatedUserMeta
+public struct AuthorizedUserMeta
 {
-    public required int UserId { get; set; }
-    public required string AccessToken { get; set; }
+    public required int Id { get; set; }
+    public required string Token { get; set; }
 }
 
 public interface IAuthService
 {
-    public Task<CreatedUserMeta> Register(RegisterDTO registerDto);
+    public Task<AuthorizedUserMeta> Register(RegisterDTO registerDto);
     
-    public Task<string> Login(LoginDTO loginDto);
+    public Task<AuthorizedUserMeta> Login(LoginDTO loginDto);
 }

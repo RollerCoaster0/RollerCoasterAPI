@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using RollerCoaster.DataTransferObjects.Common;
 using RollerCoaster.DataTransferObjects.Game.Creation;
+using RollerCoaster.DataTransferObjects.Game.Fetching;
 using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
@@ -9,18 +11,20 @@ namespace RollerCoaster.Controllers.Game;
 public class CharacterClassesController(ICharacterClassService characterClassService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromQuery] CharacterClassCreationDTO characterClassCreationDto)
+    [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] CharacterClassCreationDTO characterClassCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdCharacterClassId = await characterClassService.Create(int.Parse(userId), characterClassCreationDto);
-        return Created("", new
-        {
-            Id = createdCharacterClassId
-        });
+        return Created("", new IdOfCreatedObjectDTO { Id = createdCharacterClassId });
     }
     
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         await characterClassService.Delete(int.Parse(userId), id);
@@ -28,7 +32,9 @@ public class CharacterClassesController(ICharacterClassService characterClassSer
     }
     
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    [ProducesResponseType<CharacterClassDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CharacterClassDTO>> Get(int id)
     {
         var characterClassDto = await characterClassService.Get(id);
         return Ok(characterClassDto);

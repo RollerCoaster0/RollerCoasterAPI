@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using RollerCoaster.DataTransferObjects.Common;
 using RollerCoaster.DataTransferObjects.Game.Creation;
+using RollerCoaster.DataTransferObjects.Game.Fetching;
 using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
@@ -9,17 +11,19 @@ namespace RollerCoaster.Controllers.Game;
 public class NonPlayableCharactersController(INonPlayableCharacterService nonPlayableCharacterService): ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create([FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
+    [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdNpcId = await nonPlayableCharacterService.Create(int.Parse(userId), nonPlayableCharacterCreationDto);
-        return Created("", new
-        {
-            Id = createdNpcId
-        });
+        return Created("", new IdOfCreatedObjectDTO { Id = createdNpcId });
     }
     
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -28,7 +32,9 @@ public class NonPlayableCharactersController(INonPlayableCharacterService nonPla
     }
     
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    [ProducesResponseType<NonPlayableCharacterDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<NonPlayableCharacterDTO>> Get(int id)
     {
         var npcDto = await nonPlayableCharacterService.Get(id);
         return Ok(npcDto);

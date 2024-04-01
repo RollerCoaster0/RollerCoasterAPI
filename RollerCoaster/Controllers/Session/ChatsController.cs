@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Chat;
-using RollerCoaster.Services.Abstractions.Common;
+using RollerCoaster.DataTransferObjects.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;
@@ -10,34 +10,17 @@ namespace RollerCoaster.Controllers.Session;
 public class ChatsController(IChatService chatService) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Send([FromQuery] SendMessageDTO sendMessageDto)
+    public async Task<ActionResult<IdOfCreatedObjectDTO>> Send([FromQuery] SendMessageDTO sendMessageDto)
     {
-        try
-        {
-            var senderId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-            var messageId = await chatService.SendMessage(int.Parse(senderId), sendMessageDto);
-            return Created("", new
-            {
-                Id = messageId
-            });
-        }
-        catch (ProvidedDataIsInvalidError e)
-        {
-            return BadRequest(new { e.Message });
-        }
+        var senderId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var messageId = await chatService.SendMessage(int.Parse(senderId), sendMessageDto);
+        return Created("", new IdOfCreatedObjectDTO { Id = messageId });
     }
 
     [HttpGet("last")]
-    public async Task<IActionResult> GetLast([FromQuery] GetLastMessagesDTO getLastMessagesDto)
+    public async Task<ActionResult<List<MessageDTO>>> GetLast([FromQuery] GetLastMessagesDTO getLastMessagesDto)
     {
-        try
-        {
-            var messages = await chatService.GetLastMessages(getLastMessagesDto);
-            return Ok(messages);
-        }
-        catch (ProvidedDataIsInvalidError e)
-        {
-            return BadRequest(new { e.Message });
-        }
+        var messages = await chatService.GetLastMessages(getLastMessagesDto);
+        return Ok(messages);
     }
 }
