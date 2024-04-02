@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
 using RollerCoaster.DataTransferObjects.Game.Creation;
@@ -8,11 +9,14 @@ namespace RollerCoaster.Controllers.Game;
 
 [Route("locations")]
 [ApiController]
-public class LocationsController(ILocationService locationService): ControllerBase
+[Authorize]
+public class LocationsController(
+    ILocationService locationService): ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromQuery] LocationCreationDTO locationCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -20,10 +24,16 @@ public class LocationsController(ILocationService locationService): ControllerBa
         return Created("", new IdOfCreatedObjectDTO { Id = createdLocationId });
     }
     
-    [HttpPost("map")]
-    public Task<ActionResult<IdOfCreatedObjectDTO>> LoadMap([FromQuery] LocationCreationDTO locationCreationDto)
+    [HttpPost("{locationId:int}/map")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult> LoadMap(LocationMapLoadDTO locationMapLoadDto)
     {
-        throw new NotImplementedException();
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        await locationService.LoadMap(int.Parse(userId), locationMapLoadDto); 
+        return Ok();
     }
     
     [HttpDelete("{id:int}")]

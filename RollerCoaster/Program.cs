@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Minio;
 using RollerCoaster;
 using RollerCoaster.DataBase;
 using RollerCoaster.Services.Abstractions.Game;
@@ -14,6 +15,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<SiteConfiguration>(builder.Configuration);
 builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configuration.GetSection("JWT"));
 
+builder.Services.AddMinio(configureClient => configureClient
+    .WithEndpoint(builder.Configuration["ObjectStorage:Endpoint"])
+    .WithSSL(false)
+    .WithCredentials(
+        builder.Configuration["ObjectStorage:AccessKey"],
+        builder.Configuration["ObjectStorage:SecretKey"]));
+
+builder.Services.AddSingleton<IFileTypeValidator, FileTypeValidator>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionToProblemDetailsHandler>();
 builder.Services.AddControllers();

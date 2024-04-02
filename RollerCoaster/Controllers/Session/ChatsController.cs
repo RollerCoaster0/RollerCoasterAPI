@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Chat;
 using RollerCoaster.DataTransferObjects.Common;
@@ -7,6 +8,7 @@ namespace RollerCoaster.Controllers.Session;
 
 [Route("chats")]
 [ApiController]
+[Authorize]
 public class ChatsController(IChatService chatService) : ControllerBase
 {
     [HttpPost]

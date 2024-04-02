@@ -1,3 +1,5 @@
+using Minio;
+using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
 using RollerCoaster.DataTransferObjects.Game.Creation;
@@ -7,8 +9,11 @@ using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Services.Realisations.Game;
 
-
-public class LocationService(DataBaseContext dataBaseContext): ILocationService
+public class LocationService(
+    DataBaseContext dataBaseContext,
+    IFileTypeValidator fileTypeValidator,
+    IMinioClient minioClient
+    ): ILocationService
 {
     public async Task<LocationDTO> Get(int id)
     {
@@ -23,7 +28,7 @@ public class LocationService(DataBaseContext dataBaseContext): ILocationService
             GameId = location.GameId,
             Name = location.Name,
             Description = location.Description,
-            MapFileUrl = location.MapFileName
+            MapFilePath = location.MapFilePath
         };
     }
 
@@ -42,13 +47,44 @@ public class LocationService(DataBaseContext dataBaseContext): ILocationService
             GameId = locationCreationDto.GameId,
             Name = locationCreationDto.Name,
             Description = locationCreationDto.Description,
-            MapFileName = ""
+            MapFilePath = null
         };
 
         await dataBaseContext.Locations.AddAsync(location);
         await dataBaseContext.SaveChangesAsync();
 
         return location.Id;
+    }
+
+    public async Task LoadMap(int accessorId, LocationMapLoadDTO locationMapLoadDto)
+    {
+        var location = await dataBaseContext.Locations.FindAsync(locationMapLoadDto.LocationId);
+        if (location is null)
+            throw new NotFoundError("Локация не найдена.");
+        
+        var game = await dataBaseContext.Games.FindAsync(location.GameId);
+        if (game is null)
+            throw new NotFoundError("Игра не найдена.");
+        
+        if (game.CreatorId != accessorId)
+            throw new AccessDeniedError("У вас нет доступа к этой игре.");
+        
+        if (!fileTypeValidator.ValidateImageFileType(locationMapLoadDto.File))
+            throw new ProvidedDataIsInvalidError("Формат файла не поддерживается.");
+        
+        string uniqName = Guid.NewGuid().ToString("N");
+        string ext = locationMapLoadDto.File.FileName.Split(".").Last().ToLower();
+        string objectName = $"{uniqName}.{ext}";
+        
+        await minioClient.PutObjectAsync(
+            new PutObjectArgs()
+                .WithBucket("images")
+                .WithObject(objectName) 
+                .WithObjectSize(locationMapLoadDto.File.Length)
+                .WithStreamData(locationMapLoadDto.File.OpenReadStream()));
+
+        location.MapFilePath = $"images/{objectName}";
+        await dataBaseContext.SaveChangesAsync();
     }
 
     public async Task Delete(int accessorId, int id)

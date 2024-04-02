@@ -36,7 +36,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 GameId = l.GameId,
                 Name = l.Name,
                 Description = l.Description,
-                MapFileUrl = l.MapFileName // TODO: разобраться
+                MapFilePath = l.MapFilePath // TODO: разобраться
             }).ToList(),
             
             Items = game.Items.Select(i => new ItemDTO

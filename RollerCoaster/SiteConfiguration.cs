@@ -16,4 +16,11 @@ public class SiteConfiguration
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
         }
     }
+
+    public class ObjectStorageConfiguration
+    {
+        public required string Endpoint { get; set; }
+        public required string AccessKey { get; set; }
+        public required string SecretKey { get; set; }
+    }
 }

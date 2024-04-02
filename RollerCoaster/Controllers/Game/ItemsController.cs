@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
 using RollerCoaster.DataTransferObjects.Game.Creation;
@@ -8,11 +9,13 @@ namespace RollerCoaster.Controllers.Game;
 
 [Route("items")]
 [ApiController]
+[Authorize]
 public class ItemsController(IItemService itemService): ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] ItemCreationDTO itemCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
