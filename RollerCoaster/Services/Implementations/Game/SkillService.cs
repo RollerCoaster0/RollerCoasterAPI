@@ -26,8 +26,9 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         };
     }
 
-    public async Task<int> Create(int accessorId, SkillCreationDTO skillCreationDto)
+    public async Task<int> Create(int accessorId, SkillCreationDTO skillCreationDto) 
     {
+        // TODO: Validate AvailableForCharacterClassId
         var game = await dataBaseContext.Games.FindAsync(skillCreationDto.GameId);
         
         if (game is null)
