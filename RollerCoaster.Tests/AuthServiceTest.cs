@@ -136,7 +136,7 @@ public class AuthServiceTest()
     }
 
     [TestMethod]
-    public async Task CorrectLogin()
+    public async Task CorrectRegisterAndLogin()
     {
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
