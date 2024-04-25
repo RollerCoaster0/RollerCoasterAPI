@@ -36,7 +36,8 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 GameId = l.GameId,
                 Name = l.Name,
                 Description = l.Description,
-                MapFilePath = l.MapFilePath // TODO: разобраться
+                MapFilePath = l.MapFilePath,
+                Sizes = l.Sizes
             }).ToList(),
             
             Items = game.Items.Select(i => new ItemDTO
@@ -71,7 +72,9 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 Id = npc.Id,
                 GameId = npc.GameId,
                 Name = npc.Name,
-                BaseLocationId = npc.BaseLocationId
+                BaseLocationId = npc.BaseLocationId,
+                BasePosition = npc.BasePosition,
+                AvatarFilePath = npc.AvatarFilePath
             }).ToList(),
             
             Classes = game.Classes.Select(cls => new CharacterClassDTO

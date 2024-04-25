@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Minio;
 using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
@@ -28,7 +29,8 @@ public class LocationService(
             GameId = location.GameId,
             Name = location.Name,
             Description = location.Description,
-            MapFilePath = location.MapFilePath
+            MapFilePath = location.MapFilePath,
+            Sizes = location.Sizes
         };
     }
 
@@ -47,7 +49,8 @@ public class LocationService(
             GameId = locationCreationDto.GameId,
             Name = locationCreationDto.Name,
             Description = locationCreationDto.Description,
-            MapFilePath = null
+            MapFilePath = null,
+            Sizes = null
         };
 
         await dataBaseContext.Locations.AddAsync(location);
@@ -69,6 +72,12 @@ public class LocationService(
         if (game.CreatorId != accessorId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
+        const string sizesPattern = @"\d+x\d+";
+        bool isSizesValid = Regex.IsMatch(locationMapLoadDto.Sizes, sizesPattern);
+
+        if (!isSizesValid)
+            throw new ProvidedDataIsInvalidError("Пример верного формата размера: 300х200");
+        
         if (!fileTypeValidator.ValidateImageFileType(locationMapLoadDto.File))
             throw new ProvidedDataIsInvalidError("Формат файла не поддерживается.");
         
@@ -84,6 +93,8 @@ public class LocationService(
                 .WithStreamData(locationMapLoadDto.File.OpenReadStream()));
 
         location.MapFilePath = $"images/{objectName}";
+        location.Sizes = locationMapLoadDto.Sizes;
+        
         await dataBaseContext.SaveChangesAsync();
     }
 

@@ -23,6 +23,18 @@ public class NonPlayableCharactersController(INonPlayableCharacterService nonPla
         return Created("", new IdOfCreatedObjectDTO { Id = createdNpcId });
     }
     
+    [HttpPost("{nonPlayableCharacterId:int}/avatar")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult> LoadMap(NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        await nonPlayableCharacterService.LoadAvatar(int.Parse(userId), nonPlayableCharacterAvatarLoadDto); 
+        return Ok();
+    }
+    
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]

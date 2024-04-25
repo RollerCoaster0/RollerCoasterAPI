@@ -1,6 +1,5 @@
 namespace RollerCoaster.DataBase.Models.Session;
 
-// TODO: доделать
 public class Attributes
 {
     public int Id { get; set; }

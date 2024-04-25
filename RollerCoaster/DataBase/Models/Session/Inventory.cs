@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace RollerCoaster.DataBase.Models.Session;
 
-// TODO: доделать
+[PrimaryKey(nameof(Id), nameof(ItemId))]
 public class Inventory
 {
     public int Id { get; set; }
-    public required int ItemId { get; set; } // key, local to game
+    public required int ItemId { get; set; }
     public required int Count { get; set; }
 }
