@@ -10,4 +10,8 @@ public interface ISessionService
     Task<int> Create(int creatorId, SessionCreationDTO sessionCreationDto);
 
     Task Delete(int accessorId, int id);
+    
+    public Task Join(int userId, PlayerCreationDTO playerCreationDto);
+    
+    public Task Start(int accessorId);
 }

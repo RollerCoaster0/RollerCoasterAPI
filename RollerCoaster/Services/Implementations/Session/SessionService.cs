@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataTransferObjects.Session.Creation;
 using RollerCoaster.DataTransferObjects.Session.Fetching;
@@ -11,29 +10,14 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
 {
     public async Task<SessionDTO> Get(int id)
     {
-        var session = await dataBaseContext.Sessions
-            .FindAsync(id);
-
-        if (session is null)
-        {
-            throw new NotFoundError("Сессия не найдена");
-        }
-
-        return new SessionDTO
-        {
-            Id = session.Id,
-            Name = session.Name,
-            Description = session.Description,
-            CreationDate = DateTimeOffset.Now,
-            CreatorId = session.CreatorId
-        };
+        throw new NotImplementedException();
     }
 
-    public async Task<int> Create(int creatorId, SessionCreationDTO sessionCreationDto)
+    public Task<int> Create(int creatorId, SessionCreationDTO roomCreationDto)
     {
         throw new NotImplementedException();
     }
-    
+
     public async Task Delete(int accessorId, int id)
     {
         var session = await dataBaseContext.Sessions.FindAsync(id);
@@ -41,10 +25,20 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
         if (session is null)
             throw new NotFoundError("Сессия не найдена.");
 
-        if (session.CreatorId != accessorId)
+        if (session.GameMasterId != accessorId)
             throw new AccessDeniedError("У вас нет доступа к этой сессии.");
         
         dataBaseContext.Remove(session);
         await dataBaseContext.SaveChangesAsync();
+    }
+
+    public Task Join(int userId, PlayerCreationDTO playerCreationDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task Start(int userId)
+    {
+        throw new NotImplementedException();
     }
 }
