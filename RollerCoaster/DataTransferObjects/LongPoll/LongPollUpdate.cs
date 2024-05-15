@@ -1,5 +1,8 @@
 namespace RollerCoaster.DataTransferObjects.Updates;
 
+/// <summary>
+/// This object contains one of described updates 
+/// </summary>
 public class LongPollUpdate
 {
     public required NewMessageUpdate? NewMessageUpdate { get; set; }

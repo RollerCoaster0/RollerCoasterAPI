@@ -12,7 +12,7 @@ namespace RollerCoaster.Controllers.Session;
 public class LongPollController(ILongPollService longPollService): ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType<GetMeDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType<LongPollUpdate>(StatusCodes.Status200OK)]
     public async Task<ActionResult<LongPollUpdate>> Poll()
     {
         // TODO: add timeout support 
