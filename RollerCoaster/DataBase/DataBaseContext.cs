@@ -9,20 +9,20 @@ namespace RollerCoaster.DataBase;
 
 public sealed class DataBaseContext: DbContext
 {
-    public required DbSet<User> Users { get; set; }
-    public required DbSet<Message> Messages { get; set; }
-    public required DbSet<Game> Games { get; set; }
-    public required DbSet<Location> Locations { get; set; }
-    public required DbSet<Item> Items { get; set; }
-    public required DbSet<Skill> Skills { get; set; }
-    public required DbSet<NonPlayableCharacter> NonPlayableCharacters { get; set; }
-    public required DbSet<CharacterClass> CharacterClasses { get; set; }
-    public required DbSet<Quest> Quests { get; set; }
-    public required DbSet<Attributes> Attributes { get; set; }
-    public required DbSet<Player> Players { get; set; }
-    public required DbSet<ActiveNonPlayableCharacter> ActiveNonPlayableCharacters { get; set; }
-    public required DbSet<Inventory> Inventories { get; set; }
-    public required DbSet<Session> Sessions { get; set; }
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<Game> Games { get; set; } = null!;
+    public DbSet<Location> Locations { get; set; } = null!;
+    public DbSet<Item> Items { get; set; } = null!;
+    public DbSet<Skill> Skills { get; set; } = null!;
+    public DbSet<NonPlayableCharacter> NonPlayableCharacters { get; set; } = null!;
+    public DbSet<CharacterClass> CharacterClasses { get; set; } = null!;
+    public DbSet<Quest> Quests { get; set; } = null!;
+    public DbSet<Attributes> Attributes { get; set; } = null!;
+    public DbSet<Player> Players { get; set; } = null!;
+    public DbSet<ActiveNonPlayableCharacter> ActiveNonPlayableCharacters { get; set; } = null!;
+    public DbSet<Inventory> Inventories { get; set; } = null!;
+    public DbSet<Session> Sessions { get; set; } = null!;
 
     public DataBaseContext(DbContextOptions<DataBaseContext> options): base(options)
     {
