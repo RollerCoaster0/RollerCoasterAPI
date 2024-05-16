@@ -36,6 +36,7 @@ public class NonPlayableCharacterService(
 
     public async Task<int> Create(int accessorId, NonPlayableCharacterCreationDTO npcCreationDto)
     {
+        // TODO: Validation for BaseLocationId
         var game = await dataBaseContext.Games.FindAsync(npcCreationDto.GameId);
         
         if (game is null)
