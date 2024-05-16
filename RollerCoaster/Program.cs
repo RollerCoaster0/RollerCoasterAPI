@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Minio;
 using RollerCoaster;
 using RollerCoaster.DataBase;
+using RollerCoaster.LongPoll;
 using RollerCoaster.Services.Abstractions.Game;
 using RollerCoaster.Services.Abstractions.Users;
 using RollerCoaster.Services.Realisations.Game;
@@ -58,6 +59,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddCors();
 
+builder.Services.AddSingleton<ILongPollService, SimpleQueueLongPollService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IPasswordHashService, PasswordHashService>();
 
