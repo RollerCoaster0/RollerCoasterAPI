@@ -10,7 +10,24 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
 {
     public async Task<SessionDTO> Get(int id)
     {
-        throw new NotImplementedException();
+        var session = await dataBaseContext.Sessions
+            .FindAsync(id);
+
+        if (session is null)
+        {
+            throw new NotFoundError("Сессия не найдена");
+        }
+
+        return new SessionDTO
+        {
+            Id = session.Id,
+            Name = session.Name,
+            Description = session.Description,
+            GameMasterId = session.GameMasterId,
+            GameId = session.GameId,
+            Players = [], // empty list for now
+            IsActive = session.IsActive
+        };
     }
 
     public Task<int> Create(int creatorId, SessionCreationDTO roomCreationDto)
