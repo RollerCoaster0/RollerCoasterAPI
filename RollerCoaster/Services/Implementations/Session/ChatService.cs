@@ -2,19 +2,18 @@ using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session.Chat;
 using RollerCoaster.DataTransferObjects.Chat;
-using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Services.Realisations.Session;
 
 public class ChatService(DataBaseContext dataBaseContext) : IChatService
 {
-    public async Task<int> SendMessage(int senderId, SendMessageDTO sendMessageDto)
+    public async Task<int> SendMessage(int senderUserId, SendMessageDTO sendMessageDto)
     {
         var message = new Message
         {
             SessionId = sendMessageDto.SessionId, // TODO:add validation
-            SenderId = senderId,
+            SenderId = senderUserId,
             Text = sendMessageDto.Text,
             Time = DateTimeOffset.Now
         };

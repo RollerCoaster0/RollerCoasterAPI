@@ -26,14 +26,14 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
         };
     }
 
-    public async Task<int> Create(int accessorId, ItemCreationDTO itemCreationDto)
+    public async Task<int> Create(int accessorUserId, ItemCreationDTO itemCreationDto)
     {
         var game = await dataBaseContext.Games.FindAsync(itemCreationDto.GameId);
         
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var item = new Item
@@ -50,7 +50,7 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
         return item.Id;
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var item = await dataBaseContext.Items.FindAsync(id);
         if (item is null)
@@ -60,7 +60,7 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Items.Remove(item);

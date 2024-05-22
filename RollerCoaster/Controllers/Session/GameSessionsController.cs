@@ -8,5 +8,5 @@ namespace RollerCoaster.Controllers.Session;
 [Authorize]
 public class GameSessionsController: ControllerBase
 {
-    
+    // TODO: implement
 }

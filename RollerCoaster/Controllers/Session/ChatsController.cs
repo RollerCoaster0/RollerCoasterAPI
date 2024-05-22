@@ -11,6 +11,8 @@ namespace RollerCoaster.Controllers.Session;
 [Authorize]
 public class ChatsController(IChatService chatService) : ControllerBase
 {
+    // TODO: type hints
+    
     [HttpPost]
     public async Task<ActionResult<IdOfCreatedObjectDTO>> Send([FromQuery] SendMessageDTO sendMessageDto)
     {

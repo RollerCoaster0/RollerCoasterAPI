@@ -7,7 +7,7 @@ public interface IItemService
 {
     Task<ItemDTO> Get(int id);
     
-    Task<int> Create(int accessorId, ItemCreationDTO itemCreationDto);
+    Task<int> Create(int accessorUserId, ItemCreationDTO itemCreationDto);
 
-    Task Delete(int accessorId, int id);
+    Task Delete(int accessorUserId, int id);
 }

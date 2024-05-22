@@ -34,7 +34,7 @@ public class NonPlayableCharacterService(
         };
     }
 
-    public async Task<int> Create(int accessorId, NonPlayableCharacterCreationDTO npcCreationDto)
+    public async Task<int> Create(int accessorUserId, NonPlayableCharacterCreationDTO npcCreationDto)
     {
         // TODO: Validation for BaseLocationId
         var game = await dataBaseContext.Games.FindAsync(npcCreationDto.GameId);
@@ -42,7 +42,7 @@ public class NonPlayableCharacterService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         const string basePositionPattern = @"\d+x\d+";
@@ -66,7 +66,7 @@ public class NonPlayableCharacterService(
         return npc.Id;
     }
 
-    public async Task LoadAvatar(int accessorId, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
+    public async Task LoadAvatar(int accessorUserId, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
     {
         var nonPlayableCharacter = await dataBaseContext.NonPlayableCharacters.FindAsync(nonPlayableCharacterAvatarLoadDto.NonPlayableCharacterId);
         if (nonPlayableCharacter is null)
@@ -76,7 +76,7 @@ public class NonPlayableCharacterService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         if (!fileTypeValidator.ValidateImageFileType(nonPlayableCharacterAvatarLoadDto.File))
@@ -98,7 +98,7 @@ public class NonPlayableCharacterService(
         await dataBaseContext.SaveChangesAsync();
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var npc = await dataBaseContext.NonPlayableCharacters.FindAsync(id);
         if (npc is null)
@@ -108,7 +108,7 @@ public class NonPlayableCharacterService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.NonPlayableCharacters.Remove(npc);

@@ -7,9 +7,9 @@ public interface ILocationService
 {
     Task<LocationDTO> Get(int id);
     
-    Task<int> Create(int accessorId, LocationCreationDTO locationCreationDto);
+    Task<int> Create(int accessorUserId, LocationCreationDTO locationCreationDto);
     
-    Task LoadMap(int accessorId, LocationMapLoadDTO locationMapLoadDto);
+    Task LoadMap(int accessorUserId, LocationMapLoadDTO locationMapLoadDto);
 
-    Task Delete(int accessorId, int id);
+    Task Delete(int accessorUserId, int id);
 }

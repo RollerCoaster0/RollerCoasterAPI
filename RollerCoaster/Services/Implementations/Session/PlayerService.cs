@@ -1,5 +1,7 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
+using RollerCoaster.DataTransferObjects;
+using RollerCoaster.DataTransferObjects.Session;
 using RollerCoaster.DataTransferObjects.Session.Creation;
 using RollerCoaster.DataTransferObjects.Session.Fetching;
 using RollerCoaster.Services.Abstractions.Common;
@@ -9,7 +11,7 @@ namespace RollerCoaster.Services.Realisations.Session;
 
 public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
 {
-    public async Task<PlayerDTO> Get(int accessorId, int playerId)
+    public async Task<PlayerDTO> Get(int accessorUserId, int playerId)
     {
         // TODO: Validation for accessorId
         var player = await dataBaseContext.Players.FindAsync(playerId);
@@ -33,7 +35,7 @@ public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
         };
     }
 
-    public async Task<int> Create(int accessorId, PlayerCreationDTO playerCreationDto)
+    public async Task<int> Create(int accessorUserId, PlayerCreationDTO playerCreationDto)
     {
         var session = await dataBaseContext.Sessions.FindAsync(playerCreationDto.SessionId);
         if (session is null)
@@ -59,5 +61,24 @@ public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
         await dataBaseContext.SaveChangesAsync();
         return player.Id;
     }
-    
+
+    public Task Move(int accessorId, int playerId, MoveSomeoneDTO moveSomeoneDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task ChangeHealthPoints(int accessorId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UseSkill(int accessorId, int playerId, UseSkillDTO useSkillDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<RollResultDTO> Roll(int accessorId, int playerId, RollDTO rollDto)
+    {
+        throw new NotImplementedException();
+    }
 }

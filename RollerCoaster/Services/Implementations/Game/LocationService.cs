@@ -34,14 +34,14 @@ public class LocationService(
         };
     }
 
-    public async Task<int> Create(int accessorId, LocationCreationDTO locationCreationDto)
+    public async Task<int> Create(int accessorUserId, LocationCreationDTO locationCreationDto)
     {
         var game = await dataBaseContext.Games.FindAsync(locationCreationDto.GameId);
         
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var location = new Location
@@ -59,7 +59,7 @@ public class LocationService(
         return location.Id;
     }
 
-    public async Task LoadMap(int accessorId, LocationMapLoadDTO locationMapLoadDto)
+    public async Task LoadMap(int accessorUserId, LocationMapLoadDTO locationMapLoadDto)
     {
         var location = await dataBaseContext.Locations.FindAsync(locationMapLoadDto.LocationId);
         if (location is null)
@@ -69,7 +69,7 @@ public class LocationService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         const string sizesPattern = @"\d+x\d+";
@@ -98,7 +98,7 @@ public class LocationService(
         await dataBaseContext.SaveChangesAsync();
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var location = await dataBaseContext.Locations.FindAsync(id);
         if (location is null)
@@ -108,7 +108,7 @@ public class LocationService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Locations.Remove(location);

@@ -9,9 +9,9 @@ namespace RollerCoaster.Services.Realisations.Game;
 
 public class QuestService(DataBaseContext dataBaseContext): IQuestService
 {
-    public async Task<QuestDTO> Get(int id)
+    public async Task<QuestDTO> Get(int questId)
     {
-        var quest = await dataBaseContext.Quests.FindAsync(id);
+        var quest = await dataBaseContext.Quests.FindAsync(questId);
 
         if (quest is null)
             throw new NotFoundError("Квест не найден.");
@@ -26,14 +26,14 @@ public class QuestService(DataBaseContext dataBaseContext): IQuestService
         };
     }
 
-    public async Task<int> Create(int accessorId, QuestCreationDTO questCreationDto)
+    public async Task<int> Create(int accessorUserId, QuestCreationDTO questCreationDto)
     {
         var game = await dataBaseContext.Games.FindAsync(questCreationDto.GameId);
         
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var quest = new Quest
@@ -50,9 +50,9 @@ public class QuestService(DataBaseContext dataBaseContext): IQuestService
         return quest.Id;
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int questId)
     {
-        var quest = await dataBaseContext.Quests.FindAsync(id);
+        var quest = await dataBaseContext.Quests.FindAsync(questId);
         if (quest is null)
             throw new NotFoundError("Квест не найден.");
         
@@ -60,7 +60,7 @@ public class QuestService(DataBaseContext dataBaseContext): IQuestService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Quests.Remove(quest);

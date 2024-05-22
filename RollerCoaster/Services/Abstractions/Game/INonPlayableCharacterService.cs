@@ -7,9 +7,9 @@ public interface INonPlayableCharacterService
 {
     Task<NonPlayableCharacterDTO> Get(int id);
     
-    Task<int> Create(int accessorId, NonPlayableCharacterCreationDTO npcCreationDto);
+    Task<int> Create(int accessorUserId, NonPlayableCharacterCreationDTO npcCreationDto);
     
-    Task LoadAvatar(int accessorId, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto);
+    Task LoadAvatar(int accessorUserId, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto);
 
-    Task Delete(int accessorId, int id);
+    Task Delete(int accessorUserId, int id);
 }

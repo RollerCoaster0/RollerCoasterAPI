@@ -4,7 +4,7 @@ namespace RollerCoaster.Services.Abstractions.Users;
 
 public interface IUsersService
 {
-    Task<GetMeDTO> GetMe(int id);
+    Task<GetMeDTO> GetMe(int userId);
     
-    Task<UserDTO> GetUser(int id);
+    Task<UserDTO> GetUser(int userId);
 }

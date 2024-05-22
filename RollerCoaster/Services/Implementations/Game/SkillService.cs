@@ -26,7 +26,7 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         };
     }
 
-    public async Task<int> Create(int accessorId, SkillCreationDTO skillCreationDto) 
+    public async Task<int> Create(int accessorUserId, SkillCreationDTO skillCreationDto) 
     {
         // TODO: Validate AvailableForCharacterClassId
         var game = await dataBaseContext.Games.FindAsync(skillCreationDto.GameId);
@@ -34,7 +34,7 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var skill = new Skill
@@ -51,7 +51,7 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         return skill.Id;
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var skill = await dataBaseContext.Skills.FindAsync(id);
         if (skill is null)
@@ -61,7 +61,7 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Skills.Remove(skill);

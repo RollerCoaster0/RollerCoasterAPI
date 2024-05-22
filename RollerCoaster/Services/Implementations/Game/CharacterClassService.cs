@@ -25,14 +25,14 @@ public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterC
         };
     }
 
-    public async Task<int> Create(int accessorId, CharacterClassCreationDTO characterClassCreationDto)
+    public async Task<int> Create(int accessorUserId, CharacterClassCreationDTO characterClassCreationDto)
     {
         var game = await dataBaseContext.Games.FindAsync(characterClassCreationDto.GameId);
         
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var characterClass = new CharacterClass
@@ -48,7 +48,7 @@ public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterC
         return characterClass.Id;
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var characterClass = await dataBaseContext.CharacterClasses.FindAsync(id);
         if (characterClass is null)
@@ -58,7 +58,7 @@ public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterC
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.CharacterClasses.Remove(characterClass);

@@ -87,13 +87,13 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
         };
     }
 
-    public async Task<int> Create(int creatorId, GameCreationDTO gameCreationDto)
+    public async Task<int> Create(int accessorUserId, GameCreationDTO gameCreationDto)
     {
         var game = new DataBase.Models.Game.Game
         {
             Description = gameCreationDto.Description,
             Name = gameCreationDto.Name,
-            CreatorId = creatorId
+            CreatorId = accessorUserId
         };
         await dataBaseContext.Games.AddAsync(game);
         await dataBaseContext.SaveChangesAsync();
@@ -101,14 +101,14 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
         return game.Id;
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var game = await dataBaseContext.Games.FindAsync(id);
         
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
 
-        if (game.CreatorId != accessorId)
+        if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         dataBaseContext.Remove(game);
