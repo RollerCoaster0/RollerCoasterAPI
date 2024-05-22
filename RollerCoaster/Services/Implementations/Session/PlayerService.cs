@@ -62,22 +62,22 @@ public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
         return player.Id;
     }
 
-    public Task Move(int accessorId, int playerId, MoveSomeoneDTO moveSomeoneDto)
+    public Task Move(int accessorUserId, int playerId, MoveSomeoneDTO moveSomeoneDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task ChangeHealthPoints(int accessorId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto)
+    public Task ChangeHealthPoints(int accessorUserId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task UseSkill(int accessorId, int playerId, UseSkillDTO useSkillDto)
+    public Task UseSkill(int accessorUserId, int playerId, UseSkillDTO useSkillDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task<RollResultDTO> Roll(int accessorId, int playerId, RollDTO rollDto)
+    public Task<RollResultDTO> Roll(int accessorUserId, int playerId, RollDTO rollDto)
     {
         throw new NotImplementedException();
     }

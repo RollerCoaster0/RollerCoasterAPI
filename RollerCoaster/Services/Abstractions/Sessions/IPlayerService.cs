@@ -11,11 +11,11 @@ public interface IPlayerService
     
     public Task<int> Create(int accessorUserId, PlayerCreationDTO playerCreationDto);
     
-    Task Move(int accessorId, int playerId, MoveSomeoneDTO moveSomeoneDto);
+    Task Move(int accessorUserId, int playerId, MoveSomeoneDTO moveSomeoneDto);
     
-    Task ChangeHealthPoints(int accessorId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto);
+    Task ChangeHealthPoints(int accessorUserId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto);
 
-    Task UseSkill(int accessorId, int playerId, UseSkillDTO useSkillDto);
+    Task UseSkill(int accessorUserId, int playerId, UseSkillDTO useSkillDto);
     
-    Task<RollResultDTO> Roll(int accessorId, int playerId, RollDTO rollDto);
+    Task<RollResultDTO> Roll(int accessorUserId, int playerId, RollDTO rollDto);
 }

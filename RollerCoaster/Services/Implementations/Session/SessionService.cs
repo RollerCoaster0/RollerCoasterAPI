@@ -35,14 +35,14 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
         throw new NotImplementedException();
     }
 
-    public async Task Delete(int accessorId, int id)
+    public async Task Delete(int accessorUserId, int id)
     {
         var session = await dataBaseContext.Sessions.FindAsync(id);
         
         if (session is null)
             throw new NotFoundError("Сессия не найдена.");
 
-        if (session.GameMasterId != accessorId)
+        if (session.GameMasterId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой сессии.");
         
         dataBaseContext.Remove(session);
@@ -54,7 +54,7 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
         throw new NotImplementedException();
     }
 
-    public Task Start(int userId)
+    public Task Start(int accessorUserId)
     {
         throw new NotImplementedException();
     }

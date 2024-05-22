@@ -6,22 +6,22 @@ namespace RollerCoaster.Services.Realisations.Session;
 
 public class ActiveNonPlayableCharactersService: IActiveNonPlayableCharactersService
 {
-    public Task Move(int accessorId, int anpcId, MoveSomeoneDTO moveSomeoneDto)
+    public Task Move(int accessorUserId, int anpcId, MoveSomeoneDTO moveSomeoneDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task ChangeHealthPoints(int accessorId, int anpcId, ChangeHealthPointsDTO changeHealthPointsDto)
+    public Task ChangeHealthPoints(int accessorUserId, int anpcId, ChangeHealthPointsDTO changeHealthPointsDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task UseSkill(int accessorId, int anpcId, UseSkillDTO useSkillDto)
+    public Task UseSkill(int accessorUserId, int anpcId, UseSkillDTO useSkillDto)
     {
         throw new NotImplementedException();
     }
 
-    public Task<RollResultDTO> Roll(int accessorId, int anpcId, RollDTO rollDto)
+    public Task<RollResultDTO> Roll(int accessorUserId, int anpcId, RollDTO rollDto)
     {
         throw new NotImplementedException();
     }
