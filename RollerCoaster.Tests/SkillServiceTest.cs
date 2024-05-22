@@ -20,14 +20,16 @@ public class SkillServiceTest()
         using var context = new DataBaseContext(options);
         context.Skills.Add(new Skill()
         {
-            AvailableForCharacterClassId = 1,
+            AvailableOnlyForCharacterClassId = 1,
+            AvailableOnlyForNonPlayableCharacterId = 1,
             Description = "Привет",
             GameId = 1,
             Name = "куку"
         });
         context.Skills.Add(new Skill()
         {
-            AvailableForCharacterClassId = 1,
+            AvailableOnlyForCharacterClassId = 1,
+            AvailableOnlyForNonPlayableCharacterId = 1,
             Description = "Пока",
             GameId = 1,
             Name = "дыды"
@@ -56,13 +58,15 @@ public class SkillServiceTest()
             Name = "ppp",
             NonPlayableCharacters = [],
             Quests = [],
-            Skills = []
+            Skills = [],
+            BaseLocationId = 1
         });
         context.SaveChanges();
         var service = new SkillService(context);
         _ = service.Create(1, new SkillCreationDTO()
         {
-            AvailableForCharacterClassId = 1,
+            AvailableOnlyForCharacterClassId = 1,
+            AvailableOnlyForNonPlayableCharacterId = 1,
             Description = "eeeee",
             GameId = 1,
             Name = "ttt"
@@ -79,14 +83,16 @@ public class SkillServiceTest()
         await using var context = new DataBaseContext(options);
         context.Skills.Add(new Skill()
         {
-            AvailableForCharacterClassId = 1,
+            AvailableOnlyForCharacterClassId = 1,
+            AvailableOnlyForNonPlayableCharacterId = 1,
             Description = "Привет",
             GameId = 1,
             Name = "куку"
         });
         context.Skills.Add(new Skill()
         {
-            AvailableForCharacterClassId = 1,
+            AvailableOnlyForCharacterClassId = 1,
+            AvailableOnlyForNonPlayableCharacterId = 1,
             Description = "Пока",
             GameId = 1,
             Name = "дыды"
@@ -101,7 +107,8 @@ public class SkillServiceTest()
             Name = "ppp",
             NonPlayableCharacters = [],
             Quests = [],
-            Skills = []
+            Skills = [],
+            BaseLocationId = 1
         });
         await context.SaveChangesAsync();
         var service = new SkillService(context);

@@ -7,6 +7,7 @@ public class Session
     public required string Description { get; set; }
     public required int GameMasterId { get; set; }
     public required int GameId { get; set; }
+    public required int CurrentPlayersLocationId { get; set; }
     public required List<Player> Players { get; set; }
     public required bool IsActive { get; set; }
 }

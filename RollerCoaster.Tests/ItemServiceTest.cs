@@ -20,14 +20,14 @@ public class ItemServiceTest
         using var context = new DataBaseContext(options);
         context.Items.Add(new Item()
         {
-            ItemType = ItemType.Armor,
+            ItemType = "armor",
             Description = "Привет",
             GameId = 1,
             Name = "куку"
         });
         context.Items.Add(new Item()
         {
-            ItemType = ItemType.Armor,
+            ItemType = "armor",
             Description = "Пока",
             GameId = 1,
             Name = "дыды"
@@ -56,7 +56,8 @@ public class ItemServiceTest
             Name = "ppp",
             NonPlayableCharacters = [],
             Quests = [],
-            Skills = []
+            Skills = [],
+            BaseLocationId = 0
         });
         context.SaveChanges();
         var service = new ItemService(context);
@@ -78,14 +79,14 @@ public class ItemServiceTest
         await using var context = new DataBaseContext(options);
         context.Items.Add(new Item()
         {
-            ItemType = ItemType.Armor,
+            ItemType = "armor",
             Description = "Привет",
             GameId = 1,
             Name = "куку"
         });
         context.Items.Add(new Item()
         {
-            ItemType = ItemType.Armor,
+            ItemType = "armor",
             Description = "Пока",
             GameId = 1,
             Name = "дыды"
@@ -100,7 +101,8 @@ public class ItemServiceTest
             Name = "ppp",
             NonPlayableCharacters = [],
             Quests = [],
-            Skills = []
+            Skills = [],
+            BaseLocationId = 0
         });
         await context.SaveChangesAsync();
         var service = new ItemService(context);

@@ -4,7 +4,10 @@ namespace RollerCoaster.DataTransferObjects.Game.Creation;
 
 public class LocationMapLoadDTO
 {
-    [FromRoute] public required int LocationId { get; set; }
-    [FromQuery] public required string Sizes { get; set; } // "300x200"
     [FromForm] public required IFormFile File { get; set; }
+    [FromRoute] public required int LocationId { get; set; }
+    [FromQuery] public required int Width { get; set; }
+    [FromQuery] public required int Height { get; set; }
+    [FromQuery] public required int BasePlayersXPosition { get; set; }
+    [FromQuery] public required int BasePlayersYPosition { get; set; }
 }

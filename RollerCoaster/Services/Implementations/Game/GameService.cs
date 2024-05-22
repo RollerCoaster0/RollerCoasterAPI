@@ -29,6 +29,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
             Name = game.Name,
             Description = game.Description,
             CreatorId = game.CreatorId,
+            BaseLocationId = game.BaseLocationId,
             
             Locations = game.Locations.Select(l => new LocationDTO
             {
@@ -37,7 +38,10 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 Name = l.Name,
                 Description = l.Description,
                 MapFilePath = l.MapFilePath,
-                Sizes = l.Sizes
+                BasePlayersXPosition = l.BasePlayersXPosition,
+                BasePlayersYPosition = l.BasePlayersYPosition,
+                Width = l.Width,
+                Height = l.Height
             }).ToList(),
             
             Items = game.Items.Select(i => new ItemDTO
@@ -46,7 +50,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 GameId = i.GameId,
                 Name = i.Name,
                 Description = i.Description,
-                ItemType = i.ItemType.ToString() // TODO: это норм?
+                ItemType = i.ItemType
             }).ToList(),
             
             Quests = game.Quests.Select(q => new QuestDTO
@@ -64,7 +68,8 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 GameId = s.GameId,
                 Name = s.Name,
                 Description = s.Description,
-                AvailableForCharacterClassId = s.AvailableForCharacterClassId
+                AvailableOnlyForCharacterClassId = s.AvailableOnlyForCharacterClassId,
+                AvailableOnlyForNonPlayableCharacterId = s.AvailableOnlyForNonPlayableCharacterId
             }).ToList(),
             
             NonPlayableCharacters = game.NonPlayableCharacters.Select(npc => new NonPlayableCharacterDTO
@@ -73,7 +78,8 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
                 GameId = npc.GameId,
                 Name = npc.Name,
                 BaseLocationId = npc.BaseLocationId,
-                BasePosition = npc.BasePosition,
+                BaseXPosition = npc.BaseXPosition,
+                BaseYPosition = npc.BaseYPosition,
                 AvatarFilePath = npc.AvatarFilePath
             }).ToList(),
             
@@ -93,7 +99,8 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
         {
             Description = gameCreationDto.Description,
             Name = gameCreationDto.Name,
-            CreatorId = accessorUserId
+            CreatorId = accessorUserId,
+            BaseLocationId = null
         };
         await dataBaseContext.Games.AddAsync(game);
         await dataBaseContext.SaveChangesAsync();

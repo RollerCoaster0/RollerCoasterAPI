@@ -21,7 +21,7 @@ public sealed class DataBaseContext: DbContext
     public DbSet<Attributes> Attributes { get; set; } = null!;
     public DbSet<Player> Players { get; set; } = null!;
     public DbSet<ActiveNonPlayableCharacter> ActiveNonPlayableCharacters { get; set; } = null!;
-    public DbSet<Inventory> Inventories { get; set; } = null!;
+    public DbSet<InventoryItem> Inventories { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
 
     public DataBaseContext(DbContextOptions<DataBaseContext> options): base(options)

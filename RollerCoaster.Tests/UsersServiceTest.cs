@@ -54,7 +54,7 @@ public class UsersServiceTest
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
 
-        using var context = new DataBaseContext(options);
+        await using var context = new DataBaseContext(options);
 
         var usersService = new UsersService(context);
         await usersService.GetMe(1);
@@ -68,7 +68,7 @@ public class UsersServiceTest
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
 
-        using var context = new DataBaseContext(options);
+        await using var context = new DataBaseContext(options);
 
         var usersService = new UsersService(context);
         await usersService.GetUser(1);

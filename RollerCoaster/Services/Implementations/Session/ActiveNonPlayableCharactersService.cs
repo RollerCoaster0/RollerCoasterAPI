@@ -1,10 +1,13 @@
+using RollerCoaster.DataBase;
 using RollerCoaster.DataTransferObjects;
 using RollerCoaster.DataTransferObjects.Session;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Services.Realisations.Session;
 
-public class ActiveNonPlayableCharactersService: IActiveNonPlayableCharactersService
+public class ActiveNonPlayableCharactersService(
+    DataBaseContext dataBaseContext, 
+    IRollService rollService): IActiveNonPlayableCharactersService
 {
     public Task Move(int accessorUserId, int anpcId, MoveSomeoneDTO moveSomeoneDto)
     {

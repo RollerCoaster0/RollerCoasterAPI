@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Minio;
 using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
@@ -30,7 +29,10 @@ public class LocationService(
             Name = location.Name,
             Description = location.Description,
             MapFilePath = location.MapFilePath,
-            Sizes = location.Sizes
+            Height = location.Height,
+            Width = location.Width,
+            BasePlayersXPosition = location.BasePlayersXPosition,
+            BasePlayersYPosition = location.BasePlayersYPosition
         };
     }
 
@@ -50,7 +52,10 @@ public class LocationService(
             Name = locationCreationDto.Name,
             Description = locationCreationDto.Description,
             MapFilePath = null,
-            Sizes = null
+            Height = null,
+            Width = null,
+            BasePlayersXPosition = null,
+            BasePlayersYPosition = null
         };
 
         await dataBaseContext.Locations.AddAsync(location);
@@ -72,12 +77,6 @@ public class LocationService(
         if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
-        const string sizesPattern = @"\d+x\d+";
-        bool isSizesValid = Regex.IsMatch(locationMapLoadDto.Sizes, sizesPattern);
-
-        if (!isSizesValid)
-            throw new ProvidedDataIsInvalidError("Пример верного формата размера: 300х200");
-        
         if (!fileTypeValidator.ValidateImageFileType(locationMapLoadDto.File))
             throw new ProvidedDataIsInvalidError("Формат файла не поддерживается.");
         
@@ -93,7 +92,10 @@ public class LocationService(
                 .WithStreamData(locationMapLoadDto.File.OpenReadStream()));
 
         location.MapFilePath = $"images/{objectName}";
-        location.Sizes = locationMapLoadDto.Sizes;
+        location.Height = locationMapLoadDto.Height;
+        location.Width = locationMapLoadDto.Width;
+        location.BasePlayersXPosition = locationMapLoadDto.BasePlayersXPosition;
+        location.BasePlayersYPosition = locationMapLoadDto.BasePlayersYPosition;
         
         await dataBaseContext.SaveChangesAsync();
     }

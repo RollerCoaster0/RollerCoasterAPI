@@ -55,7 +55,8 @@ public class QuestServiceTest()
             Name = "ppp",
             NonPlayableCharacters = [],
             Quests = [],
-            Skills = []
+            Skills = [],
+            BaseLocationId = 0
         });
         context.SaveChanges();
         var service = new QuestService(context);
@@ -100,7 +101,8 @@ public class QuestServiceTest()
             Name = "ppp",
             NonPlayableCharacters = [],
             Quests = [],
-            Skills = []
+            Skills = [],
+            BaseLocationId = 0
         });
         await context.SaveChangesAsync();
         var service = new QuestService(context);

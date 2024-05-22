@@ -19,12 +19,12 @@ public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
         if (player is null)
             throw new NotFoundError("Игрок не найден");
 
-        return new PlayerDTO()
+        return new PlayerDTO
         {
             Attributes = new AttributesDTO(),
             CharacterClassId = player.CharacterClassId,
-            CurrentLocationId = player.CurrentLocationId,
-            CurrentPosition = player.CurrentPosition,
+            CurrentXPosition = player.CurrentXPosition,
+            CurrentYPosition = player.CurrentYPosition,
             HealthPoints = player.HealthPoints,
             Level = player.Level,
             Inventory = new InventoryDTO(),
@@ -45,13 +45,14 @@ public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
         if (characterClass is null)
             throw new NotFoundError("Класс персонажа на найден");
         
-        var player = new Player()
+        // TODO: брать начальную позицию из объекта локации
+        var player = new Player
         {
             AttributesId = 1,
             InventoryId = 1,
             CharacterClassId = playerCreationDto.CharacterClassId,
-            CurrentPosition = "0x0",
-            CurrentLocationId = 0,
+            CurrentXPosition = 0,
+            CurrentYPosition = 0,
             HealthPoints = 100,
             Level = 1,
             Name = playerCreationDto.Name,

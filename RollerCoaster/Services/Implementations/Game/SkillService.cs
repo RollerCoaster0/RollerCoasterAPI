@@ -22,7 +22,8 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
             GameId = skill.GameId,
             Name = skill.Name,
             Description = skill.Description,
-            AvailableForCharacterClassId = skill.AvailableForCharacterClassId
+            AvailableOnlyForCharacterClassId = skill.AvailableOnlyForCharacterClassId,
+            AvailableOnlyForNonPlayableCharacterId = skill.AvailableOnlyForNonPlayableCharacterId
         };
     }
 
@@ -42,7 +43,8 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
             GameId = skillCreationDto.GameId,
             Name = skillCreationDto.Name,
             Description = skillCreationDto.Description,
-            AvailableForCharacterClassId = skillCreationDto.AvailableForCharacterClassId
+            AvailableOnlyForCharacterClassId = skillCreationDto.AvailableOnlyForCharacterClassId,
+            AvailableOnlyForNonPlayableCharacterId = skillCreationDto.AvailableOnlyForNonPlayableCharacterId
         };
 
         await dataBaseContext.Skills.AddAsync(skill);

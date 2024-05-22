@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Minio;
 using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
@@ -29,7 +28,8 @@ public class NonPlayableCharacterService(
             GameId = npc.GameId,
             Name = npc.Name,
             BaseLocationId = npc.BaseLocationId,
-            BasePosition = npc.BasePosition,
+            BaseXPosition = npc.BaseXPosition,
+            BaseYPosition = npc.BaseYPosition,
             AvatarFilePath = npc.AvatarFilePath
         };
     }
@@ -44,19 +44,14 @@ public class NonPlayableCharacterService(
         
         if (game.CreatorId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
-        
-        const string basePositionPattern = @"\d+x\d+";
-        bool isBasePositionValid = Regex.IsMatch(npcCreationDto.BasePosition, basePositionPattern);
-        
-        if (!isBasePositionValid)
-            throw new ProvidedDataIsInvalidError("Пример верного формата размера: 300х200");
 
         var npc = new NonPlayableCharacter
         {
             GameId = npcCreationDto.GameId,
             Name = npcCreationDto.Name,
             BaseLocationId = npcCreationDto.BaseLocationId,
-            BasePosition = npcCreationDto.BasePosition,
+            BaseXPosition = npcCreationDto.BaseXPosition,
+            BaseYPosition = npcCreationDto.BaseYPosition,
             AvatarFilePath = null
         };
 

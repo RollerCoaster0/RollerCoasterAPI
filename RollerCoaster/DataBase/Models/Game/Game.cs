@@ -6,6 +6,7 @@ public class Game
     public required int CreatorId { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
+    public required int? BaseLocationId { get; set; }
     public List<Location> Locations { get; set; } = [];
     public List<CharacterClass> Classes { get; set; } = [];
     public List<Quest> Quests { get; set; } = [];

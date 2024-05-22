@@ -22,7 +22,7 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
             GameId = item.GameId,
             Name = item.Name,
             Description = item.Description,
-            ItemType = item.ItemType.ToString()
+            ItemType = item.ItemType
         };
     }
 
@@ -41,7 +41,7 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
             GameId = itemCreationDto.GameId,
             Name = itemCreationDto.Name,
             Description = itemCreationDto.Description,
-            ItemType = ItemType.Armor // TODO: fix
+            ItemType = itemCreationDto.ItemType // TODO: validate
         };
 
         await dataBaseContext.Items.AddAsync(item);

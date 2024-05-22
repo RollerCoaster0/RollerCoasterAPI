@@ -8,8 +8,8 @@ public class PlayerDTO
     public required string Name { get; set; }
     public required int Level { get; set; }
     public required int HealthPoints { get; set; }
-    public required string CurrentPosition { get; set; }
-    public required int CurrentLocationId { get; set; }
+    public required int CurrentXPosition { get; set; }
+    public required int CurrentYPosition { get; set; }
     public required int CharacterClassId { get; set; }
     public required AttributesDTO Attributes { get; set; }
     public required InventoryDTO Inventory { get; set; }
