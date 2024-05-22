@@ -1,6 +1,6 @@
-using RollerCoaster.DataTransferObjects.Updates;
+using RollerCoaster.DataTransferObjects.LongPoll;
 
-namespace RollerCoaster.LongPoll;
+namespace RollerCoaster.Services.Abstractions.LongPoll;
 
 public interface ILongPollService
 {

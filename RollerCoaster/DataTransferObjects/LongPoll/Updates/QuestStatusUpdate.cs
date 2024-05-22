@@ -1,6 +1,6 @@
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.Quests;
 
-namespace RollerCoaster.DataTransferObjects.Updates;
+namespace RollerCoaster.DataTransferObjects.LongPoll.Updates;
 
 public class QuestStatusUpdate
 {

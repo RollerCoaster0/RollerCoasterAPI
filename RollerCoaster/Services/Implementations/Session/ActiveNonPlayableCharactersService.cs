@@ -1,16 +1,36 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataTransferObjects;
-using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Game.Skills;
+using RollerCoaster.DataTransferObjects.Session.ActiveNonPlayableCharacter;
+using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
-namespace RollerCoaster.Services.Realisations.Session;
+namespace RollerCoaster.Services.Implementations.Session;
 
-// тут все доступно только ГМу
 public class ActiveNonPlayableCharactersService(
     DataBaseContext dataBaseContext, 
     IRollService rollService): IActiveNonPlayableCharactersService
 {
+    public async Task<ActiveNonPlayableCharacterDTO> Get(int accessorUserId, int anpcId)
+    {
+        // TODO: validation for accessorId
+        var anpc = await dataBaseContext.ActiveNonPlayableCharacters.FindAsync(anpcId);
+        
+        if (anpc is null)
+            throw new NotFoundError("NPC не найден");
+
+        return new ActiveNonPlayableCharacterDTO
+        {
+            NonPlayableCharacterId = anpc.NonPlayableCharacterId,
+            CurrentXPosition = anpc.CurrentXPosition,
+            CurrentYPosition = anpc.CurrentYPosition,
+            HealthPoints = anpc.HealthPoints,
+            Id = anpc.Id,
+            SessionId = anpc.SessionId,
+        };
+    }
+    
     public async Task Move(int accessorUserId, int anpcId, MoveSomeoneDTO moveSomeoneDto)
     {
         var anpc = await dataBaseContext.ActiveNonPlayableCharacters.FindAsync(anpcId);

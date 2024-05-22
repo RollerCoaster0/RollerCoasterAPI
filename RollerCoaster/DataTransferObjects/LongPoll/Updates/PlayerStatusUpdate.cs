@@ -1,4 +1,4 @@
-namespace RollerCoaster.DataTransferObjects.Updates;
+namespace RollerCoaster.DataTransferObjects.LongPoll.Updates;
 
 public class PlayerStatusUpdate
 {

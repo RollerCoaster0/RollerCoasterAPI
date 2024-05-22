@@ -6,25 +6,24 @@ using Microsoft.OpenApi.Models;
 using Minio;
 using RollerCoaster;
 using RollerCoaster.DataBase;
-using RollerCoaster.LongPoll;
+using RollerCoaster.Services.Abstractions;
+using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
+using RollerCoaster.Services.Abstractions.LongPoll;
+using RollerCoaster.Services.Abstractions.Sessions;
 using RollerCoaster.Services.Abstractions.Users;
-using RollerCoaster.Services.Realisations.Game;
-using RollerCoaster.Services.Realisations.Users;
+using RollerCoaster.Services.Implementations;
+using RollerCoaster.Services.Implementations.Common;
+using RollerCoaster.Services.Implementations.Game;
+using RollerCoaster.Services.Implementations.LongPoll;
+using RollerCoaster.Services.Implementations.Session;
+using RollerCoaster.Services.Implementations.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<SiteConfiguration>(builder.Configuration);
 builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configuration.GetSection("JWT"));
 
-builder.Services.AddMinio(configureClient => configureClient
-    .WithEndpoint(builder.Configuration["ObjectStorage:Endpoint"])
-    .WithSSL(false)
-    .WithCredentials(
-        builder.Configuration["ObjectStorage:AccessKey"],
-        builder.Configuration["ObjectStorage:SecretKey"]));
-
-builder.Services.AddSingleton<IFileTypeValidator, FileTypeValidator>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionToProblemDetailsHandler>();
 builder.Services.AddControllers();
@@ -62,7 +61,14 @@ builder.Services.AddCors();
 builder.Services.AddSingleton<ILongPollService, SimpleQueueLongPollService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IPasswordHashService, PasswordHashService>();
+builder.Services.AddSingleton<IRollService, RollService>();
+builder.Services.AddSingleton<IFileTypeValidator, FileTypeValidator>();
 
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IActiveNonPlayableCharactersService, ActiveNonPlayableCharactersService>();
+builder.Services.AddScoped<IQuestStatusService, QuestStatusService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IQuestService, QuestService>();
@@ -88,6 +94,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true
         };
     });
+
+builder.Services.AddMinio(configureClient => configureClient
+    .WithEndpoint(builder.Configuration["ObjectStorage:Endpoint"])
+    .WithSSL(false)
+    .WithCredentials(
+        builder.Configuration["ObjectStorage:AccessKey"],
+        builder.Configuration["ObjectStorage:SecretKey"]));
 
 builder.Services.AddDbContext<DataBaseContext>(options =>
 {

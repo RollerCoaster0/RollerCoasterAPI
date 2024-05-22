@@ -1,11 +1,10 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
 
-namespace RollerCoaster.Services.Realisations.Game;
+namespace RollerCoaster.Services.Implementations.Game;
 
 public class SkillService(DataBaseContext dataBaseContext): ISkillService
 {

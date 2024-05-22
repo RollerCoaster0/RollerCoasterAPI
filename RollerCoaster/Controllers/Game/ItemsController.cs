@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.Items;
 using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
@@ -16,6 +15,7 @@ public class ItemsController(IItemService itemService): ControllerBase
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] ItemCreationDTO itemCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -24,9 +24,10 @@ public class ItemsController(IItemService itemService): ControllerBase
     }
     
     [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -36,6 +37,7 @@ public class ItemsController(IItemService itemService): ControllerBase
     
     [HttpGet("{id:int}")]
     [ProducesResponseType<ItemDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ItemDTO>> Get(int id)
     {

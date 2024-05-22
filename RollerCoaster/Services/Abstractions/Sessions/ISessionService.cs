@@ -1,5 +1,4 @@
-using RollerCoaster.DataTransferObjects.Session.Creation;
-using RollerCoaster.DataTransferObjects.Session.Fetching;
+using RollerCoaster.DataTransferObjects.Session;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 

@@ -1,7 +1,7 @@
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
-namespace RollerCoaster.Services.Realisations.Session;
+namespace RollerCoaster.Services.Implementations.Session;
 
 public class RollService: IRollService
 {

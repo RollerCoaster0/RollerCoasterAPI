@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.NonPlayableCharacters;
 using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
@@ -10,25 +9,31 @@ namespace RollerCoaster.Controllers.Game;
 [Route("npc")]
 [ApiController]
 [Authorize]
-public class NonPlayableCharactersController(INonPlayableCharacterService nonPlayableCharacterService): ControllerBase
+public class NonPlayableCharactersController(
+    INonPlayableCharacterService nonPlayableCharacterService): ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IdOfCreatedObjectDTO>> Create(
+        [FromQuery] NonPlayableCharacterCreationDTO nonPlayableCharacterCreationDto) 
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        var createdNpcId = await nonPlayableCharacterService.Create(int.Parse(userId), nonPlayableCharacterCreationDto);
+        var createdNpcId = await nonPlayableCharacterService.Create(
+            int.Parse(userId), 
+            nonPlayableCharacterCreationDto);
         return Created("", new IdOfCreatedObjectDTO { Id = createdNpcId });
     }
     
     [HttpPost("{nonPlayableCharacterId:int}/avatar")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult> LoadMap(NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> LoadMap(
+        NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         await nonPlayableCharacterService.LoadAvatar(int.Parse(userId), nonPlayableCharacterAvatarLoadDto); 
@@ -36,9 +41,10 @@ public class NonPlayableCharactersController(INonPlayableCharacterService nonPla
     }
     
     [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -48,6 +54,7 @@ public class NonPlayableCharactersController(INonPlayableCharacterService nonPla
     
     [HttpGet("{id:int}")]
     [ProducesResponseType<NonPlayableCharacterDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<NonPlayableCharacterDTO>> Get(int id)
     {

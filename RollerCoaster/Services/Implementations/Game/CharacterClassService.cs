@@ -1,11 +1,10 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.CharacterClasses;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
 
-namespace RollerCoaster.Services.Realisations.Game;
+namespace RollerCoaster.Services.Implementations.Game;
 
 public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterClassService
 {

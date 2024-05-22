@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.Services.Realisations.Game;
+using RollerCoaster.DataTransferObjects.Game.Skills;
+using RollerCoaster.Services.Implementations.Game;
 
 namespace RollerCoaster.Tests;
 

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RollerCoaster.DataTransferObjects.Updates;
-using RollerCoaster.LongPoll;
+using RollerCoaster.DataTransferObjects.LongPoll;
+using RollerCoaster.Services.Abstractions.LongPoll;
 
-namespace RollerCoaster.Controllers.Session;
+namespace RollerCoaster.Controllers;
 
 [Route("longpoll")]
 [ApiController]

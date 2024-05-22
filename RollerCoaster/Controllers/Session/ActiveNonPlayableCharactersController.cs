@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects;
-using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Game.Skills;
+using RollerCoaster.DataTransferObjects.Session.ActiveNonPlayableCharacter;
+using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;
@@ -12,12 +14,23 @@ namespace RollerCoaster.Controllers.Session;
 public class ActiveNonPlayableCharactersController(
     IActiveNonPlayableCharactersService activeNonPlayableCharactersService): ControllerBase
 {
-    // TODO: type hints
+    [HttpGet("{id:int}")]
+    [ProducesResponseType<ActiveNonPlayableCharacterDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ActiveNonPlayableCharacterDTO>> Get(int id)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var anpcDto = await activeNonPlayableCharactersService.Get(int.Parse(userId), id);
+        return Ok(anpcDto);
+    }
     
     [HttpPost("{id:int}/move")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Move(int id, [FromQuery] MoveSomeoneDTO moveSomeoneDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -29,6 +42,7 @@ public class ActiveNonPlayableCharactersController(
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> ChangeHp(int id, [FromQuery] ChangeHealthPointsDTO changeHealthPointsDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -40,6 +54,7 @@ public class ActiveNonPlayableCharactersController(
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UseSKill(int id, [FromQuery] UseSkillDTO useSkillDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -51,7 +66,8 @@ public class ActiveNonPlayableCharactersController(
     [ProducesResponseType<RollResultDTO>(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<RollResultDTO>> ROll(int id, [FromQuery] RollDTO rollDto)
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<RollResultDTO>> Roll(int id, [FromQuery] RollDTO rollDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var result = await activeNonPlayableCharactersService.Roll(int.Parse(userId), id, rollDto);

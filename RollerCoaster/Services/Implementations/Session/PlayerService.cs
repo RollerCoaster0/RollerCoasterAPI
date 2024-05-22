@@ -1,13 +1,13 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
 using RollerCoaster.DataTransferObjects;
-using RollerCoaster.DataTransferObjects.Session;
-using RollerCoaster.DataTransferObjects.Session.Creation;
-using RollerCoaster.DataTransferObjects.Session.Fetching;
+using RollerCoaster.DataTransferObjects.Game.Skills;
+using RollerCoaster.DataTransferObjects.Session.Common;
+using RollerCoaster.DataTransferObjects.Session.Players;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
-namespace RollerCoaster.Services.Realisations.Session;
+namespace RollerCoaster.Services.Implementations.Session;
 
 public class PlayerService(
     DataBaseContext dataBaseContext,
@@ -15,7 +15,7 @@ public class PlayerService(
 {
     public async Task<PlayerDTO> Get(int accessorUserId, int playerId)
     {
-        // TODO: Validation for accessorId
+        // TODO: validation for accessorId
         var player = await dataBaseContext.Players.FindAsync(playerId);
         
         if (player is null)
@@ -23,13 +23,11 @@ public class PlayerService(
 
         return new PlayerDTO
         {
-            Attributes = new AttributesDTO(),
             CharacterClassId = player.CharacterClassId,
             CurrentXPosition = player.CurrentXPosition,
             CurrentYPosition = player.CurrentYPosition,
             HealthPoints = player.HealthPoints,
             Level = player.Level,
-            Inventory = new InventoryDTO(),
             Id = player.Id,
             Name = player.Name,
             SessionId = player.SessionId,

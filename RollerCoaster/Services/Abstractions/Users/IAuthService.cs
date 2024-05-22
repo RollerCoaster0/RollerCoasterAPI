@@ -1,4 +1,5 @@
 using RollerCoaster.DataTransferObjects.Users;
+using RollerCoaster.DataTransferObjects.Users.Auth;
 
 namespace RollerCoaster.Services.Abstractions.Users;
 

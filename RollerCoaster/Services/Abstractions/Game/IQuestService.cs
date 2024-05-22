@@ -1,5 +1,5 @@
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.Quests;
+
 namespace RollerCoaster.Services.Abstractions.Game;
 
 public interface IQuestService

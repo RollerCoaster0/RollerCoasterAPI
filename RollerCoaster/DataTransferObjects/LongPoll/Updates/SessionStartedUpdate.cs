@@ -1,6 +1,6 @@
-using RollerCoaster.DataTransferObjects.Session.Fetching;
+using RollerCoaster.DataTransferObjects.Session;
 
-namespace RollerCoaster.DataTransferObjects.Updates;
+namespace RollerCoaster.DataTransferObjects.LongPoll.Updates;
 
 public class SessionStartedUpdate
 {

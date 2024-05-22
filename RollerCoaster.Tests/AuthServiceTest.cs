@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataTransferObjects.Users;
+using RollerCoaster.DataTransferObjects.Users.Auth;
 using RollerCoaster.Services.Abstractions.Common;
-using RollerCoaster.Services.Realisations.Users;
+using RollerCoaster.Services.Implementations.Users;
 
 namespace RollerCoaster.Tests;
 

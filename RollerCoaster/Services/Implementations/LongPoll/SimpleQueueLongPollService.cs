@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
 using Microsoft.VisualStudio.Threading;
-using RollerCoaster.DataTransferObjects.Updates;
+using RollerCoaster.DataTransferObjects.LongPoll;
+using RollerCoaster.Services.Abstractions.LongPoll;
 
-namespace RollerCoaster.LongPoll;
+namespace RollerCoaster.Services.Implementations.LongPoll;
 
 public class SimpleQueueLongPollService: ILongPollService
 {

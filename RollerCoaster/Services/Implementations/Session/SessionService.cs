@@ -1,13 +1,14 @@
 using RollerCoaster.DataBase;
-using RollerCoaster.DataTransferObjects.Session.Creation;
-using RollerCoaster.DataTransferObjects.Session.Fetching;
+using RollerCoaster.DataTransferObjects.Session;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
-namespace RollerCoaster.Services.Realisations.Session;
+namespace RollerCoaster.Services.Implementations.Session;
 
 public class SessionService(DataBaseContext dataBaseContext) : ISessionService
 {
+    // TODO: в начавшейся игре не участнки не могут запрашивать сессию
+    
     public async Task<SessionDTO> Get(int sessionId)
     {
         var session = await dataBaseContext.Sessions

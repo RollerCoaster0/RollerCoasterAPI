@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RollerCoaster.DataTransferObjects.Chat;
 using RollerCoaster.DataTransferObjects.Common;
+using RollerCoaster.DataTransferObjects.Session.Chat;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;

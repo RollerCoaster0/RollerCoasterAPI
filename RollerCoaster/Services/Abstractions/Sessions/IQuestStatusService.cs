@@ -1,4 +1,4 @@
-using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Game.Quests;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 

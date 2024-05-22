@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
-using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Game.Quests;
 using RollerCoaster.Services.Abstractions.Game;
 using RollerCoaster.Services.Abstractions.Sessions;
 
@@ -20,6 +18,7 @@ public class QuestsController(
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] QuestCreationDTO questCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -29,8 +28,9 @@ public class QuestsController(
     
     [HttpDelete("{id:int}")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -40,6 +40,7 @@ public class QuestsController(
     
     [HttpGet("{id:int}")]
     [ProducesResponseType<QuestDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<QuestDTO>> Get(int id)
     {
@@ -47,9 +48,11 @@ public class QuestsController(
         return Ok(questDto);
     }
     
-    // TODO: type hints
-    
     [HttpPost("{id:int}/status")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> SetStatus(int id, [FromQuery] QuestChangeStatusDTO questChangeStatusDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -58,6 +61,10 @@ public class QuestsController(
     }
     
     [HttpGet("{id:int}/status")]
+    [ProducesResponseType<QuestStatusDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<QuestStatusDTO>> GetStatus(int id, [FromQuery] QuestFetchStatusDTO questFetchStatusDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;

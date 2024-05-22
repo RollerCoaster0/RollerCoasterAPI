@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game;
 using RollerCoaster.Services.Abstractions.Game;
 
 namespace RollerCoaster.Controllers.Game;
@@ -15,7 +14,6 @@ public class GamesController(IGameService gameService): ControllerBase
     [HttpPost]
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] GameCreationDTO gameCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -25,8 +23,9 @@ public class GamesController(IGameService gameService): ControllerBase
     
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -36,6 +35,7 @@ public class GamesController(IGameService gameService): ControllerBase
     
     [HttpGet("{id:int}")]
     [ProducesResponseType<GameDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GameDTO>> Get(int id)
     {

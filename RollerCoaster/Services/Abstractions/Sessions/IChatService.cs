@@ -1,4 +1,4 @@
-using RollerCoaster.DataTransferObjects.Chat;
+using RollerCoaster.DataTransferObjects.Session.Chat;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 

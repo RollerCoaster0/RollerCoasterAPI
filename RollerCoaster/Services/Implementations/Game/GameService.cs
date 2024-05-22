@@ -1,11 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game;
+using RollerCoaster.DataTransferObjects.Game.CharacterClasses;
+using RollerCoaster.DataTransferObjects.Game.Items;
+using RollerCoaster.DataTransferObjects.Game.Locations;
+using RollerCoaster.DataTransferObjects.Game.NonPlayableCharacters;
+using RollerCoaster.DataTransferObjects.Game.Quests;
+using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
 
-namespace RollerCoaster.Services.Realisations.Game;
+namespace RollerCoaster.Services.Implementations.Game;
 
 public class GameService(DataBaseContext dataBaseContext) : IGameService
 {

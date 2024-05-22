@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RollerCoaster.Services.Abstractions.Users;
 
-namespace RollerCoaster.Services.Realisations.Users;
+namespace RollerCoaster.Services.Implementations.Users;
 
 public class TokenService(IOptions<SiteConfiguration.JWTConfiguration> jwtConfiguration): ITokenService
 {

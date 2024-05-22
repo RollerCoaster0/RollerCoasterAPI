@@ -1,5 +1,4 @@
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.CharacterClasses;
 
 namespace RollerCoaster.Services.Abstractions.Game;
 

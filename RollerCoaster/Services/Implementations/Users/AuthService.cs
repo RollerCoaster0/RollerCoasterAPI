@@ -2,11 +2,11 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models;
-using RollerCoaster.DataTransferObjects.Users;
+using RollerCoaster.DataTransferObjects.Users.Auth;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Users;
 
-namespace RollerCoaster.Services.Realisations.Users;
+namespace RollerCoaster.Services.Implementations.Users;
 
 public class AuthService(
     DataBaseContext dataBaseContext,

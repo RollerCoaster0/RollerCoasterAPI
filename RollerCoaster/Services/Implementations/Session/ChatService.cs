@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session.Chat;
-using RollerCoaster.DataTransferObjects.Chat;
+using RollerCoaster.DataTransferObjects.Session.Chat;
 using RollerCoaster.Services.Abstractions.Sessions;
 
-namespace RollerCoaster.Services.Realisations.Session;
+namespace RollerCoaster.Services.Implementations.Session;
 
 public class ChatService(DataBaseContext dataBaseContext) : IChatService
 {

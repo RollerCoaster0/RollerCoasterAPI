@@ -1,4 +1,6 @@
-namespace RollerCoaster.DataTransferObjects.Updates;
+using RollerCoaster.DataTransferObjects.LongPoll.Updates;
+
+namespace RollerCoaster.DataTransferObjects.LongPoll;
 
 /// <summary>
 /// This object contains one of described updates 

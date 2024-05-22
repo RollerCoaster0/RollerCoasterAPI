@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
-using RollerCoaster.DataTransferObjects.Session.Creation;
-using RollerCoaster.DataTransferObjects.Session.Fetching;
+using RollerCoaster.DataTransferObjects.Session;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;
@@ -14,6 +13,8 @@ public class SessionsController(ISessionService sessionService): ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IdOfCreatedObjectDTO>> Create([FromQuery] SessionCreationDTO sessionCreationDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -22,8 +23,11 @@ public class SessionsController(ISessionService sessionService): ControllerBase
     }
     
     [HttpPost("{id:int}/start")]
-    [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IdOfCreatedObjectDTO>> Start(int id)
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> Start(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         await sessionService.Start(int.Parse(userId), id);
@@ -31,6 +35,10 @@ public class SessionsController(ISessionService sessionService): ControllerBase
     }
     
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
@@ -39,9 +47,13 @@ public class SessionsController(ISessionService sessionService): ControllerBase
     }
     
     [HttpGet("{id:int}")]
+    [ProducesResponseType<SessionDTO>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SessionDTO>> Get(int id)
     {
-        var gameDto = await sessionService.Get(id);
-        return Ok(gameDto);
+        var sessionDto = await sessionService.Get(id);
+        return Ok(sessionDto);
     }
 }

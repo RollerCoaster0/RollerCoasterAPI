@@ -3,7 +3,7 @@ using RollerCoaster.DataTransferObjects.Users;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Users;
 
-namespace RollerCoaster.Services.Realisations.Users;
+namespace RollerCoaster.Services.Implementations.Users;
 
 public class UsersService(DataBaseContext dataBaseContext): IUsersService
 {

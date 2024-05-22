@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using RollerCoaster.Services.Abstractions.Users;
 
-namespace RollerCoaster.Services.Realisations.Users;
+namespace RollerCoaster.Services.Implementations.Users;
 
 public class PasswordHashService : IPasswordHashService
 {

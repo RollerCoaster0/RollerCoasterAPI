@@ -1,5 +1,4 @@
-using RollerCoaster.DataTransferObjects.Game.Creation;
-using RollerCoaster.DataTransferObjects.Game.Fetching;
+using RollerCoaster.DataTransferObjects.Game.Locations;
 
 namespace RollerCoaster.Services.Abstractions.Game;
 

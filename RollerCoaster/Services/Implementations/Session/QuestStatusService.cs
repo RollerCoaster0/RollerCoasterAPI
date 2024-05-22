@@ -1,14 +1,17 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
-using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Game.Quests;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
-namespace RollerCoaster.Services.Realisations.Session;
+namespace RollerCoaster.Services.Implementations.Session;
 
 public class QuestStatusService(DataBaseContext dataBaseContext): IQuestStatusService
 {
-    public async Task SetStatus(int accessorUserId, int questId, QuestChangeStatusDTO questChangeStatusDto)
+    public async Task SetStatus(
+        int accessorUserId, 
+        int questId, 
+        QuestChangeStatusDTO questChangeStatusDto)
     {
         var quest = await dataBaseContext.Quests.FindAsync(questId);
         if (quest is null)
