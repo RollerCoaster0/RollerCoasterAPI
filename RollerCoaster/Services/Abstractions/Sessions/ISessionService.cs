@@ -5,13 +5,11 @@ namespace RollerCoaster.Services.Abstractions.Sessions;
 
 public interface ISessionService
 {
-    Task<SessionDTO> Get(int id);
+    Task<SessionDTO> Get(int sessionId);
 
     Task<int> Create(int creatorId, SessionCreationDTO sessionCreationDto);
 
-    Task Delete(int accessorUserId, int id);
+    Task Delete(int accessorUserId, int sessionId);
     
-    public Task Join(int userId, PlayerCreationDTO playerCreationDto);
-    
-    public Task Start(int accessorUserId);
+    public Task Start(int accessorUserId, int sessionId);
 }

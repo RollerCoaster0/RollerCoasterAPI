@@ -9,7 +9,9 @@ using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Services.Realisations.Session;
 
-public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
+public class PlayerService(
+    DataBaseContext dataBaseContext,
+    IRollService rollService): IPlayerService
 {
     public async Task<PlayerDTO> Get(int accessorUserId, int playerId)
     {
@@ -63,23 +65,81 @@ public class PlayerService(DataBaseContext dataBaseContext): IPlayerService
         return player.Id;
     }
 
-    public Task Move(int accessorUserId, int playerId, MoveSomeoneDTO moveSomeoneDto)
+    public async Task Move(int accessorUserId, int playerId, MoveSomeoneDTO moveSomeoneDto)
     {
-        throw new NotImplementedException();
+        var player = await dataBaseContext.Players.FindAsync(playerId);
+        if (player is null)
+            throw new NotFoundError("Игрок не найден.");
+
+        var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
+        if (session is null)
+            throw new NotFoundError("Сессия не найден.");
+        
+        if (session.GameMasterId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этому.");
+        
+        // TODO: validate coordinates 
+        player.CurrentXPosition = moveSomeoneDto.X;
+        player.CurrentYPosition = moveSomeoneDto.Y;
+
+        await dataBaseContext.SaveChangesAsync();
     }
 
-    public Task ChangeHealthPoints(int accessorUserId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto)
+    public async Task ChangeHealthPoints(int accessorUserId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto)
     {
-        throw new NotImplementedException();
+        var player = await dataBaseContext.Players.FindAsync(playerId);
+        if (player is null)
+            throw new NotFoundError("Игрок не найден.");
+
+        var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
+        if (session is null)
+            throw new NotFoundError("Сессия не найден.");
+        
+        if (session.GameMasterId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этому.");
+        
+        player.HealthPoints = changeHealthPointsDto.HP;
+        
+        await dataBaseContext.SaveChangesAsync();
     }
 
-    public Task UseSkill(int accessorUserId, int playerId, UseSkillDTO useSkillDto)
+    public async Task UseSkill(int accessorUserId, int playerId, UseSkillDTO useSkillDto)
     {
-        throw new NotImplementedException();
+        var player = await dataBaseContext.Players.FindAsync(playerId);
+        if (player is null)
+            throw new NotFoundError("Игрок не найден.");
+
+        var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
+        if (session is null)
+            throw new NotFoundError("Сессия не найден.");
+        
+        if (session.GameMasterId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этому.");
+        
+        var skill = await dataBaseContext.Skills.FindAsync(useSkillDto.SkillId);
+        
+        if (skill is null)
+            throw new NotFoundError("Скилл не найден.");
     }
 
-    public Task<RollResultDTO> Roll(int accessorUserId, int playerId, RollDTO rollDto)
+    public async Task<RollResultDTO> Roll(int accessorUserId, int playerId, RollDTO rollDto)
     {
-        throw new NotImplementedException();
+        var player = await dataBaseContext.Players.FindAsync(playerId);
+        if (player is null)
+            throw new NotFoundError("Игрок не найден.");
+
+        var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
+        if (session is null)
+            throw new NotFoundError("Сессия не найден.");
+        
+        if (session.GameMasterId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этому.");
+        
+        var rollResult = await rollService.Roll(rollDto.Die);
+        
+        return new RollResultDTO
+        {
+            Result = rollResult
+        };
     }
 }

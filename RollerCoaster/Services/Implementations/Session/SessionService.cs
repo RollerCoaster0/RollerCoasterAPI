@@ -8,10 +8,10 @@ namespace RollerCoaster.Services.Realisations.Session;
 
 public class SessionService(DataBaseContext dataBaseContext) : ISessionService
 {
-    public async Task<SessionDTO> Get(int id)
+    public async Task<SessionDTO> Get(int sessionId)
     {
         var session = await dataBaseContext.Sessions
-            .FindAsync(id);
+            .FindAsync(sessionId);
 
         if (session is null)
         {
@@ -30,14 +30,40 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
         };
     }
 
-    public Task<int> Create(int creatorId, SessionCreationDTO roomCreationDto)
+    public async Task<int> Create(int creatorId, SessionCreationDTO roomCreationDto)
     {
-        throw new NotImplementedException();
+        var game = await dataBaseContext.Games.FindAsync(roomCreationDto.GameId);
+
+        if (game is null)
+            throw new NotFoundError("Игра не найдена.");
+
+        if (game.BaseLocationId is null)
+            throw new ProvidedDataIsInvalidError("Игра редактируется.");
+        
+        // TODO: проверить, что у всех локаций есть карта
+
+        var session = new DataBase.Models.Session.Session
+        {
+            Name = roomCreationDto.Name,
+            Description = roomCreationDto.Description,
+            CurrentPlayersLocationId = game.BaseLocationId.Value,
+            GameId = roomCreationDto.GameId,
+            GameMasterId = creatorId,
+            IsActive = false,
+            Players = []
+        };
+
+        await dataBaseContext.AddAsync(session);
+        await dataBaseContext.SaveChangesAsync();
+
+        return session.Id;
     }
 
-    public async Task Delete(int accessorUserId, int id)
+    public async Task Delete(int accessorUserId, int sessionId)
     {
-        var session = await dataBaseContext.Sessions.FindAsync(id);
+        var session = await dataBaseContext.Sessions.FindAsync(sessionId);
+        
+        // TODO: тут надо каскадно и остальные части удалять
         
         if (session is null)
             throw new NotFoundError("Сессия не найдена.");
@@ -49,13 +75,17 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
         await dataBaseContext.SaveChangesAsync();
     }
 
-    public Task Join(int userId, PlayerCreationDTO playerCreationDto)
+    public async Task Start(int accessorUserId, int sessionId)
     {
-        throw new NotImplementedException();
-    }
+        var session = await dataBaseContext.Sessions.FindAsync(sessionId);
+        
+        if (session is null)
+            throw new NotFoundError("Сессия не найдена.");
+        
+        if (session.GameMasterId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
 
-    public Task Start(int accessorUserId)
-    {
-        throw new NotImplementedException();
+        session.IsActive = true;
+        await dataBaseContext.SaveChangesAsync();
     }
 }
