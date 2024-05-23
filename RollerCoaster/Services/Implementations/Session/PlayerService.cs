@@ -1,6 +1,5 @@
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
-using RollerCoaster.DataTransferObjects;
 using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.DataTransferObjects.Session.Players;
@@ -39,20 +38,28 @@ public class PlayerService(
     {
         var session = await dataBaseContext.Sessions.FindAsync(playerCreationDto.SessionId);
         if (session is null)
-            throw new NotFoundError("Сессия не найдена");
+            throw new NotFoundError("Сессия не найдена.");
         
         var characterClass = await dataBaseContext.CharacterClasses.FindAsync(playerCreationDto.CharacterClassId);
         if (characterClass is null)
-            throw new NotFoundError("Класс персонажа на найден");
+            throw new NotFoundError("Класс персонажа на найден.");
         
-        // TODO: брать начальную позицию из объекта локации
+        var game = await dataBaseContext.Games.FindAsync(session.GameId);
+        if (game is null)
+            throw new NotFoundError("Игра не найдена.");
+        
+        var location = await dataBaseContext.Locations.FindAsync(game.BaseLocationId!.Value);
+        if (location is null)
+            throw new NotFoundError("Локация не найдена.");
+        
         var player = new Player
         {
+            UserId = accessorUserId,
             AttributesId = 1,
             InventoryId = 1,
             CharacterClassId = playerCreationDto.CharacterClassId,
-            CurrentXPosition = 0,
-            CurrentYPosition = 0,
+            CurrentXPosition = location.BasePlayersXPosition!.Value,
+            CurrentYPosition = location.BasePlayersYPosition!.Value,
             HealthPoints = 100,
             Level = 1,
             Name = playerCreationDto.Name,
@@ -60,6 +67,7 @@ public class PlayerService(
         };
         await dataBaseContext.AddAsync(player);
         await dataBaseContext.SaveChangesAsync();
+        
         return player.Id;
     }
 
@@ -73,7 +81,7 @@ public class PlayerService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         // TODO: validate coordinates 
@@ -111,11 +119,10 @@ public class PlayerService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var skill = await dataBaseContext.Skills.FindAsync(useSkillDto.SkillId);
-        
         if (skill is null)
             throw new NotFoundError("Скилл не найден.");
     }
@@ -130,7 +137,7 @@ public class PlayerService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var rollResult = await rollService.Roll(rollDto.Die);
