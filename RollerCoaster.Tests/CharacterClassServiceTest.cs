@@ -48,7 +48,7 @@ public class CharacterClassServiceTest
         {
             Classes = [],
             Description = "Ппппп",
-            CreatorId = 1,
+            CreatorUserId = 1,
             Items = [],
             Locations = [],
             Name = "ppp",
@@ -91,7 +91,7 @@ public class CharacterClassServiceTest
         {
             Classes = [],
             Description = "Ппппп",
-            CreatorId = 1,
+            CreatorUserId = 1,
             Items = [],
             Locations = [],
             Name = "ppp",

@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RollerCoaster.DataBase.Models.Session;
 
 public class Attributes
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public int Health { get; set; }
     public int Strength { get; set; }

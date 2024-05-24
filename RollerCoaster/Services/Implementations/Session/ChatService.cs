@@ -1,44 +1,43 @@
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
-using RollerCoaster.DataBase.Models.Session.Chat;
 using RollerCoaster.DataTransferObjects.Session.Chat;
+using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Services.Implementations.Session;
 
 public class ChatService(DataBaseContext dataBaseContext) : IChatService
 {
-    public async Task<int> SendMessage(int senderUserId, SendMessageDTO sendMessageDto)
+    public async Task<List<ChatActionDTO>> GetActions(int accessorUserId, GetChatActionsDTO getChatActionsDto)
     {
-        var message = new Message
-        {
-            SessionId = sendMessageDto.SessionId, // TODO:add validation
-            SenderId = senderUserId,
-            Text = sendMessageDto.Text,
-            Time = DateTimeOffset.Now
-        };
-        await dataBaseContext.Messages.AddAsync(message);
-        await dataBaseContext.SaveChangesAsync();
+        var session = await dataBaseContext.Sessions.FindAsync(getChatActionsDto.SessionId);
+        if (session is null)
+            throw new NotFoundError("Сессия не найдена.");
+        
+        var isUserMemberOfSession = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id && p.UserId == accessorUserId)
+            .AnyAsync();
+        
+        var isUserGameMasterOfSession = session.GameMasterUserId == accessorUserId;
+        
+        if (!isUserMemberOfSession && !isUserGameMasterOfSession && session.IsActive)
+            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
 
-        return message.Id;
-    }
+        var usedRollActions = await dataBaseContext.UsedRollActions
+            .Where(a => a.SessionId == getChatActionsDto.SessionId)
+            .ToArrayAsync();
+        
+        var usedSkillsActions = await dataBaseContext.UsedSkillActions
+            .Where(a => a.SessionId == getChatActionsDto.SessionId)
+            .ToArrayAsync();
 
-    public async Task<List<MessageDTO>> GetLastMessages(GetLastMessagesDTO getLastMessagesDto)
-    {
-        var messages = await dataBaseContext.Messages
-            .Where(m => m.SessionId == getLastMessagesDto.SessionId) // TODO:add validation
-            .OrderByDescending(m => m.Id)
-            .Take(getLastMessagesDto.Count)
-            .OrderBy(m => m.Id)
-            .ToListAsync();
+        var messagesActions = await dataBaseContext.Messages
+            .Where(m => m.SessionId == getChatActionsDto.SessionId)
+            .ToArrayAsync();
+        
+        // TODO: сложить все эти экшены в список из ChatActionDTO,
+        // а затем отсортировать по дате
 
-        return messages.Select(m => new MessageDTO 
-        { 
-            MessageId = m.Id,
-            SenderId = m.SenderId,
-            SessionId = m.SessionId,
-            Text = m.Text,
-            Time = m.Time
-        }).ToList();
+        return [];
     }
 }

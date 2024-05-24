@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
 using RollerCoaster.DataTransferObjects.Game.Quests;
@@ -21,7 +22,7 @@ public class QuestStatusService(DataBaseContext dataBaseContext): IQuestStatusSe
         if (session is null)
             throw new NotFoundError("Сессия не найдена");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var questStatus = await dataBaseContext.QuestStatuses.FindAsync(questChangeStatusDto.SessionId, questId);
@@ -50,11 +51,18 @@ public class QuestStatusService(DataBaseContext dataBaseContext): IQuestStatusSe
         int questId, 
         QuestFetchStatusDTO questFetchStatusDto)
     {
-        // TODO: получать статус квеста может только участник игры, валидировать это
-        
         var questStatus = await dataBaseContext.QuestStatuses.FindAsync(questFetchStatusDto.SessionId, questId);
         if (questStatus is null)
             throw new NotFoundError("Пока у этого квеста нет статуса");
+        
+        var isUserMemberOfSession = await dataBaseContext.Players
+            .AnyAsync(p => p.SessionId == questStatus.SessionId && p.UserId == accessorUserId);
+        
+        var isUserGameMasterOfSession = await dataBaseContext.Sessions
+            .AnyAsync(s => s.Id == questStatus.SessionId && s.GameMasterUserId == accessorUserId);
+        
+        if (!isUserMemberOfSession && !isUserGameMasterOfSession)
+            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
 
         return new QuestStatusDTO
         {

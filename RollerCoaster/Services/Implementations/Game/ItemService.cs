@@ -32,7 +32,7 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var item = new Item
@@ -59,7 +59,7 @@ public class ItemService(DataBaseContext dataBaseContext): IItemService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Items.Remove(item);

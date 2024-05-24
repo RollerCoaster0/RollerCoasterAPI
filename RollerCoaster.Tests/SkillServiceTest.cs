@@ -52,7 +52,7 @@ public class SkillServiceTest()
         {
             Classes = [],
             Description = "Ппппп",
-            CreatorId = 1,
+            CreatorUserId = 1,
             Items = [],
             Locations = [],
             Name = "ppp",
@@ -101,7 +101,7 @@ public class SkillServiceTest()
         {
             Classes = [],
             Description = "Ппппп",
-            CreatorId = 1,
+            CreatorUserId = 1,
             Items = [],
             Locations = [],
             Name = "ppp",

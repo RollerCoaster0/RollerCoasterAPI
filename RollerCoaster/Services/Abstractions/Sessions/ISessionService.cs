@@ -4,7 +4,7 @@ namespace RollerCoaster.Services.Abstractions.Sessions;
 
 public interface ISessionService
 {
-    Task<SessionDTO> Get(int sessionId);
+    Task<SessionDTO> Get(int accessorUserId, int sessionId);
 
     Task<int> Create(int creatorId, SessionCreationDTO sessionCreationDto);
 

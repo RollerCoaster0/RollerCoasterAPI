@@ -31,7 +31,7 @@ public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterC
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var characterClass = new CharacterClass
@@ -57,7 +57,7 @@ public class CharacterClassService(DataBaseContext dataBaseContext): ICharacterC
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.CharacterClasses.Remove(characterClass);

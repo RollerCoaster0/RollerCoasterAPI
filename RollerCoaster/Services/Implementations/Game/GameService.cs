@@ -33,7 +33,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
             Id = game.Id,
             Name = game.Name,
             Description = game.Description,
-            CreatorId = game.CreatorId,
+            CreatorId = game.CreatorUserId,
             BaseLocationId = game.BaseLocationId,
             
             Locations = game.Locations.Select(l => new LocationDTO
@@ -104,7 +104,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
         {
             Description = gameCreationDto.Description,
             Name = gameCreationDto.Name,
-            CreatorId = accessorUserId,
+            CreatorUserId = accessorUserId,
             BaseLocationId = null
         };
         await dataBaseContext.Games.AddAsync(game);
@@ -120,7 +120,7 @@ public class GameService(DataBaseContext dataBaseContext) : IGameService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
 
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         dataBaseContext.Remove(game);

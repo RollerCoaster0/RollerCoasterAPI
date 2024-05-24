@@ -1,5 +1,5 @@
+using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
-using RollerCoaster.DataTransferObjects;
 using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.ActiveNonPlayableCharacter;
 using RollerCoaster.DataTransferObjects.Session.Common;
@@ -14,11 +14,18 @@ public class ActiveNonPlayableCharactersService(
 {
     public async Task<ActiveNonPlayableCharacterDTO> Get(int accessorUserId, int anpcId)
     {
-        // TODO: validation for accessorId
         var anpc = await dataBaseContext.ActiveNonPlayableCharacters.FindAsync(anpcId);
-        
         if (anpc is null)
             throw new NotFoundError("NPC не найден");
+        
+        var isUserMemberOfSession = await dataBaseContext.Players
+            .AnyAsync(p => p.SessionId == anpc.SessionId && p.UserId == accessorUserId);
+        
+        var isUserGameMasterOfSession = await dataBaseContext.Sessions
+            .AnyAsync(s => s.Id == anpc.SessionId && s.GameMasterUserId == accessorUserId);
+        
+        if (!isUserMemberOfSession && !isUserGameMasterOfSession)
+            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
 
         return new ActiveNonPlayableCharacterDTO
         {
@@ -41,7 +48,7 @@ public class ActiveNonPlayableCharactersService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         // TODO: validate coordinates 
@@ -61,7 +68,7 @@ public class ActiveNonPlayableCharactersService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
 
         anpc.HealthPoints = changeHealthPointsDto.HP;
@@ -79,7 +86,7 @@ public class ActiveNonPlayableCharactersService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var skill = await dataBaseContext.Skills.FindAsync(useSkillDto.SkillId);
@@ -98,14 +105,15 @@ public class ActiveNonPlayableCharactersService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
-        if (session.GameMasterId != accessorUserId)
+        if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var rollResult = await rollService.Roll(rollDto.Die);
         
         return new RollResultDTO
         {
-            Result = rollResult
+            Result = rollResult,
+            Die = rollDto.Die
         };
     }
 }

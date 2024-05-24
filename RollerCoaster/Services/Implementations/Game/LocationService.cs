@@ -43,7 +43,7 @@ public class LocationService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var location = new Location
@@ -74,7 +74,7 @@ public class LocationService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         if (!fileTypeValidator.ValidateImageFileType(locationMapLoadDto.File))
@@ -110,7 +110,7 @@ public class LocationService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Locations.Remove(location);

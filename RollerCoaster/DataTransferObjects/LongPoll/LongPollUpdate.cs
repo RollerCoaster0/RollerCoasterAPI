@@ -7,11 +7,8 @@ namespace RollerCoaster.DataTransferObjects.LongPoll;
 /// </summary>
 public class LongPollUpdate
 {
-    public required NewMessageUpdate? NewMessageUpdate { get; set; }
-    public required PlayerMoveUpdate? PlayerMoveUpdate { get; set; }
-    public required RollUpdate? RollUpdate { get; set; }
-    public required SkillUsedUpdate? SkillUsedUpdate { get; set; }
-    public required QuestStatusUpdate? QuestStatusUpdate { get; set; }
-    public required PlayerStatusUpdate? PlayerStatusUpdate { get; set; }
-    public required SessionStartedUpdate? SessionStartedUpdate { get; set; }
+    public required ChatActionUpdate? ChatAction { get; set; }
+    public required QuestStatusUpdate? QuestStatus { get; set; }
+    public required SessionStartedUpdate? SessionStarted { get; set; }
+    public required MoveUpdate? Move { get; set; }
 }

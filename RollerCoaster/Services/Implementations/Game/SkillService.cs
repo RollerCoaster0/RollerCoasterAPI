@@ -34,7 +34,7 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var skill = new Skill
@@ -62,7 +62,7 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.Skills.Remove(skill);

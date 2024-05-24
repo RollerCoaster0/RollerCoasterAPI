@@ -42,7 +42,7 @@ public class NonPlayableCharacterService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         var npc = new NonPlayableCharacter
@@ -71,7 +71,7 @@ public class NonPlayableCharacterService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
         
         if (!fileTypeValidator.ValidateImageFileType(nonPlayableCharacterAvatarLoadDto.File))
@@ -103,7 +103,7 @@ public class NonPlayableCharacterService(
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
         
-        if (game.CreatorId != accessorUserId)
+        if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
 
         dataBaseContext.NonPlayableCharacters.Remove(npc);

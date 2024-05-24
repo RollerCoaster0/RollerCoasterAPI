@@ -53,7 +53,8 @@ public class SessionsController(ISessionService sessionService): ControllerBase
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SessionDTO>> Get(int id)
     {
-        var sessionDto = await sessionService.Get(id);
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var sessionDto = await sessionService.Get(int.Parse(userId), id);
         return Ok(sessionDto);
     }
 }

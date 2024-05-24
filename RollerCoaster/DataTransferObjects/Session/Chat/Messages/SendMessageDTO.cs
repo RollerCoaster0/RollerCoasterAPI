@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RollerCoaster.DataTransferObjects.Session.Chat;
+namespace RollerCoaster.DataTransferObjects.Session.Chat.Messages;
 
 public class SendMessageDTO
 {
