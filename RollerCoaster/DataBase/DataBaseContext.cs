@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase.Models;
 using RollerCoaster.DataBase.Models.Game;
 using RollerCoaster.DataBase.Models.Session;
+using RollerCoaster.DataBase.Models.Session.Chat;
 using NonPlayableCharacter = RollerCoaster.DataBase.Models.Game.NonPlayableCharacter;
 
 namespace RollerCoaster.DataBase;

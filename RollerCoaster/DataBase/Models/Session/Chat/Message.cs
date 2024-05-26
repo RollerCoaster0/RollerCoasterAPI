@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RollerCoaster.DataBase.Models.Session;
+namespace RollerCoaster.DataBase.Models.Session.Chat;
 
 public class Message
 {

@@ -60,7 +60,7 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
 
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
-
+    
         if (game.BaseLocationId is null)
             throw new ProvidedDataIsInvalidError("Игра редактируется.");
         

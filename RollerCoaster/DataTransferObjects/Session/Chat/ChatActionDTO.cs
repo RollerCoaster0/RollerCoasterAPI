@@ -1,4 +1,3 @@
-using RollerCoaster.DataTransferObjects.LongPoll.Updates;
 using RollerCoaster.DataTransferObjects.Session.Chat.Actions;
 
 namespace RollerCoaster.DataTransferObjects.Session.Chat;
