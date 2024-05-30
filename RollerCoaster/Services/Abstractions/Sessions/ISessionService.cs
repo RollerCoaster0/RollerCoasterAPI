@@ -10,5 +10,7 @@ public interface ISessionService
 
     Task Delete(int accessorUserId, int sessionId);
     
-    public Task Start(int accessorUserId, int sessionId);
+    Task Start(int accessorUserId, int sessionId);
+
+    Task ChangeLocation(int accessorUserId, int sessionId, ChangeLocationDTO locationDto);
 }

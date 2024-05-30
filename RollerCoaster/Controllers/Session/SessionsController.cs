@@ -57,4 +57,16 @@ public class SessionsController(ISessionService sessionService): ControllerBase
         var sessionDto = await sessionService.Get(int.Parse(userId), id);
         return Ok(sessionDto);
     }
+    
+    [HttpPost("{id:int}/changeLocation")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> ChangeLocation(int id, [FromQuery] ChangeLocationDTO locationDto)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        await sessionService.ChangeLocation(int.Parse(userId), id, locationDto);
+        return Ok();
+    }
 }

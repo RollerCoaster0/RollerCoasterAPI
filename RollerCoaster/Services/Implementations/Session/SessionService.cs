@@ -129,4 +129,32 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
         session.IsActive = true;
         await dataBaseContext.SaveChangesAsync();
     }
+
+    public async Task ChangeLocation(int accessorUserId, int sessionId, ChangeLocationDTO locationDto)
+    {
+        var session = await dataBaseContext.Sessions.FindAsync(sessionId);
+
+        if (session is null)
+            throw new NotFoundError("Сессия не найдена.");
+
+        if (session.GameMasterUserId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
+
+        if (session.CurrentPlayersLocationId == locationDto.LocationId)
+            throw new ProvidedDataIsInvalidError("Выберите отличную от текущей локацию.");
+        
+        var location = await dataBaseContext.Locations.FindAsync(locationDto.LocationId);
+
+        if (location is null)
+            throw new NotFoundError("Данная локация не найдена.");
+
+        if (location.GameId != session.GameId)
+            throw new ProvidedDataIsInvalidError("Данная локация принадлежит другой игре.");
+
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError("Игра не началась.");
+        
+        session.CurrentPlayersLocationId = locationDto.LocationId;
+        await dataBaseContext.SaveChangesAsync();
+    }
 }
