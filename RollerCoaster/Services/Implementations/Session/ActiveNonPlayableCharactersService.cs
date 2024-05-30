@@ -47,6 +47,9 @@ public class ActiveNonPlayableCharactersService(
         var session = await dataBaseContext.Sessions.FindAsync(anpc.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
+
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
         
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
@@ -68,6 +71,9 @@ public class ActiveNonPlayableCharactersService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
+        
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
 
@@ -85,6 +91,9 @@ public class ActiveNonPlayableCharactersService(
         var session = await dataBaseContext.Sessions.FindAsync(anpc.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
+        
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
         
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
@@ -104,6 +113,9 @@ public class ActiveNonPlayableCharactersService(
         var session = await dataBaseContext.Sessions.FindAsync(anpc.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
+        
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
         
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
