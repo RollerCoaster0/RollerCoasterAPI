@@ -48,7 +48,7 @@ public class PlayerService(
         var session = await dataBaseContext.Sessions.FindAsync(playerCreationDto.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найдена.");
-        
+
         var characterClass = await dataBaseContext.CharacterClasses.FindAsync(playerCreationDto.CharacterClassId);
         if (characterClass is null)
             throw new NotFoundError("Класс персонажа на найден.");
@@ -88,6 +88,9 @@ public class PlayerService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
+        
         if (session.GameMasterUserId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
@@ -108,6 +111,9 @@ public class PlayerService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
+        
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
@@ -126,6 +132,9 @@ public class PlayerService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
         
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
+        
         if (session.GameMasterUserId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
@@ -143,6 +152,9 @@ public class PlayerService(
         var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
+        
+        if (!session.IsActive)
+            throw new ProvidedDataIsInvalidError( "Игра не началась");
         
         if (accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
