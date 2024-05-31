@@ -66,7 +66,6 @@ builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IActiveNonPlayableCharactersService, ActiveNonPlayableCharactersService>();
 builder.Services.AddScoped<IQuestStatusService, QuestStatusService>();
-builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsersService, UsersService>();

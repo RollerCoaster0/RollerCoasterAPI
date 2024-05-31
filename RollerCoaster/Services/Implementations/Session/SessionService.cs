@@ -1,14 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
+using RollerCoaster.DataTransferObjects.LongPoll;
 using RollerCoaster.DataTransferObjects.Session;
-using RollerCoaster.DataTransferObjects.Session.Players;
+using RollerCoaster.DataTransferObjects.Session.Locations;
 using RollerCoaster.Services.Abstractions.Common;
+using RollerCoaster.Services.Abstractions.LongPoll;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Services.Implementations.Session;
 
-public class SessionService(DataBaseContext dataBaseContext) : ISessionService
+public class SessionService(
+    DataBaseContext dataBaseContext,
+    ILongPollService longPollService) : ISessionService
 {
     public async Task<SessionDTO> Get(int accessorUserId, int sessionId)
     {
@@ -33,25 +37,14 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
             Id = session.Id,
             Name = session.Name,
             Description = session.Description,
-            GameMasterId = session.GameMasterUserId,
+            GameMasterUserId = session.GameMasterUserId,
             GameId = session.GameId,
             IsActive = session.IsActive,
-            Players = session.Players.Select(p => new PlayerDTO
-            {
-                Id = p.Id,
-                UserId = p.UserId,
-                SessionId = p.SessionId,
-                Name = p.Name,
-                CharacterClassId = p.CharacterClassId,
-                CurrentXPosition = p.CurrentXPosition,
-                CurrentYPosition = p.CurrentYPosition,
-                HealthPoints = p.HealthPoints,
-                Level = p.Level
-            }).ToList()
+            CurrentPlayersLocationId = session.CurrentPlayersLocationId
         };
     }
 
-    public async Task<int> Create(int creatorId, SessionCreationDTO roomCreationDto)
+    public async Task<int> Create(int creatorUserId, SessionCreationDTO roomCreationDto)
     {
         var game = await dataBaseContext.Games
             .Include(g => g.Locations)
@@ -76,7 +69,7 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
             Description = roomCreationDto.Description,
             CurrentPlayersLocationId = game.BaseLocationId.Value,
             GameId = roomCreationDto.GameId,
-            GameMasterUserId = creatorId,
+            GameMasterUserId = creatorUserId,
             IsActive = false
         };
 
@@ -96,6 +89,37 @@ public class SessionService(DataBaseContext dataBaseContext) : ISessionService
             await dataBaseContext.ActiveNonPlayableCharacters.AddAsync(anpc);
         }
         await dataBaseContext.SaveChangesAsync();
+        
+        var update = new SessionDTO
+        {
+            Id = session.Id,
+            Name = session.Name,
+            Description = session.Description,
+            GameMasterUserId = session.GameMasterUserId,
+            GameId = session.GameId,
+            CurrentPlayersLocationId = session.CurrentPlayersLocationId,
+            IsActive = session.IsActive
+        };
+
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = null,
+                Move = null,
+                SessionStarted = update
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
 
         return session.Id;
     }

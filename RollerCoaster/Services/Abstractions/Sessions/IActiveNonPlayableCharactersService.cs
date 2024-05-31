@@ -1,13 +1,14 @@
-using RollerCoaster.DataTransferObjects;
-using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.ActiveNonPlayableCharacter;
 using RollerCoaster.DataTransferObjects.Session.Common;
+using RollerCoaster.DataTransferObjects.Session.Skills;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 
 public interface IActiveNonPlayableCharactersService
 {
     Task<ActiveNonPlayableCharacterDTO> Get(int accessorUserId, int anpcId);
+
+    Task<List<ActiveNonPlayableCharacterDTO>> GetBySession(int accessorUserId, int sessionId);
     
     Task Move(int accessorUserId, int anpcId, MoveSomeoneDTO moveSomeoneDto);
     

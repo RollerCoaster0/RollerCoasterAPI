@@ -2,13 +2,11 @@ using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.ActiveNonPlayableCharacter;
 using RollerCoaster.DataTransferObjects.Session.Players;
 
-namespace RollerCoaster.DataTransferObjects.Session.Chat.Actions;
+namespace RollerCoaster.DataTransferObjects.Session.Messages;
 
-public class SkillUsedAction
-
+public class UsedSkillMessageDTO
 {
-    public required int SessionId { get; set; }
-    public required ActiveNonPlayableCharacterDTO? ActiveNonPlayableCharacter { get; set; }
     public required PlayerDTO? Player { get; set; }
+    public required ActiveNonPlayableCharacterDTO? ANPC { get; set; }
     public required SkillDTO Skill { get; set; }
 }

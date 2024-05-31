@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RollerCoaster.DataTransferObjects;
-using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.ActiveNonPlayableCharacter;
 using RollerCoaster.DataTransferObjects.Session.Common;
+using RollerCoaster.DataTransferObjects.Session.Skills;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;
@@ -16,7 +15,6 @@ public class ActiveNonPlayableCharactersController(
 {
     [HttpGet("{id:int}")]
     [ProducesResponseType<ActiveNonPlayableCharacterDTO>(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ActiveNonPlayableCharacterDTO>> Get(int id)
@@ -24,6 +22,17 @@ public class ActiveNonPlayableCharactersController(
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var anpcDto = await activeNonPlayableCharactersService.Get(int.Parse(userId), id);
         return Ok(anpcDto);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType<List<ActiveNonPlayableCharacterDTO>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<ActiveNonPlayableCharacterDTO>>> GetBySession([FromQuery] int sessionId)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var anpcsDto = await activeNonPlayableCharactersService.GetBySession(int.Parse(userId), sessionId);
+        return Ok(anpcsDto);
     }
     
     [HttpPost("{id:int}/move")]

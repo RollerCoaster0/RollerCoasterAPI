@@ -1,4 +1,5 @@
 using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Session.Locations;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 
@@ -6,7 +7,7 @@ public interface ISessionService
 {
     Task<SessionDTO> Get(int accessorUserId, int sessionId);
 
-    Task<int> Create(int creatorId, SessionCreationDTO sessionCreationDto);
+    Task<int> Create(int creatorUserId, SessionCreationDTO sessionCreationDto);
 
     Task Delete(int accessorUserId, int sessionId);
     

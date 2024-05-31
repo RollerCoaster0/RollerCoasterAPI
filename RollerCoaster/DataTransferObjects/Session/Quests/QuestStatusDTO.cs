@@ -1,9 +1,6 @@
-using Microsoft.EntityFrameworkCore;
+namespace RollerCoaster.DataTransferObjects.Session.Quests;
 
-namespace RollerCoaster.DataBase.Models.Session;
-
-[PrimaryKey(nameof(SessionId), nameof(QuestId))]
-public class QuestStatus
+public class QuestStatusDTO
 {
     public required int SessionId { get; set; }
     public required int QuestId { get; set; }

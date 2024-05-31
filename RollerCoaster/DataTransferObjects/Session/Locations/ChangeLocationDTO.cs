@@ -1,4 +1,4 @@
-namespace RollerCoaster.DataTransferObjects.Session;
+namespace RollerCoaster.DataTransferObjects.Session.Locations;
 
 public class ChangeLocationDTO
 {

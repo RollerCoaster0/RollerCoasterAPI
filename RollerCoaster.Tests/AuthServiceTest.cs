@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 using RollerCoaster.DataBase;
-using RollerCoaster.DataTransferObjects.Users;
 using RollerCoaster.DataTransferObjects.Users.Auth;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Implementations.Users;
@@ -10,7 +9,7 @@ using RollerCoaster.Services.Implementations.Users;
 namespace RollerCoaster.Tests;
 
 [TestClass]
-public class AuthServiceTest()
+public class AuthServiceTest
 {
     private readonly SiteConfiguration.JWTConfiguration _jwt = new()
     {

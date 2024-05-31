@@ -1,17 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
+using RollerCoaster.DataBase.Models.Session.Messages;
 using RollerCoaster.DataTransferObjects.Game.Skills;
+using RollerCoaster.DataTransferObjects.LongPoll;
+using RollerCoaster.DataTransferObjects.LongPoll.Updates;
 using RollerCoaster.DataTransferObjects.Session.Common;
+using RollerCoaster.DataTransferObjects.Session.Messages;
 using RollerCoaster.DataTransferObjects.Session.Players;
+using RollerCoaster.DataTransferObjects.Session.Skills;
 using RollerCoaster.Services.Abstractions.Common;
+using RollerCoaster.Services.Abstractions.LongPoll;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Services.Implementations.Session;
 
 public class PlayerService(
     DataBaseContext dataBaseContext,
-    IRollService rollService): IPlayerService
+    IRollService rollService,
+    ILongPollService longPollService): IPlayerService
 {
     public async Task<PlayerDTO> Get(int accessorUserId, int playerId)
     {
@@ -43,11 +50,47 @@ public class PlayerService(
         };
     }
 
+    public async Task<List<PlayerDTO>> GetBySession(int accessorUserId, int sessionId)
+    {
+        var isUserMemberOfSession = await dataBaseContext.Players
+            .AnyAsync(p => p.SessionId == sessionId && p.UserId == accessorUserId);
+        
+        var isUserGameMasterOfSession = await dataBaseContext.Sessions
+            .AnyAsync(s => s.Id == sessionId && s.GameMasterUserId == accessorUserId);
+        
+        if (!isUserMemberOfSession && !isUserGameMasterOfSession)
+            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
+
+        var players = await dataBaseContext.Players
+            .Where(player => player.SessionId == sessionId)
+            .ToListAsync();
+
+        return players.Select(player => new PlayerDTO
+        {
+            CharacterClassId = player.CharacterClassId,
+            CurrentXPosition = player.CurrentXPosition,
+            CurrentYPosition = player.CurrentYPosition,
+            HealthPoints = player.HealthPoints,
+            Level = player.Level,
+            Id = player.Id,
+            Name = player.Name,
+            SessionId = player.SessionId,
+            UserId = player.UserId
+        }).ToList();
+    }
+
     public async Task<int> Create(int accessorUserId, PlayerCreationDTO playerCreationDto)
     {
         var session = await dataBaseContext.Sessions.FindAsync(playerCreationDto.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найдена.");
+        
+        var isUserMemberOfSession = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id && p.UserId == accessorUserId)
+            .AnyAsync();
+
+        if (isUserMemberOfSession)
+            throw new ProvidedDataIsInvalidError("Вы уже состоите в этой игре.");
 
         var characterClass = await dataBaseContext.CharacterClasses.FindAsync(playerCreationDto.CharacterClassId);
         if (characterClass is null)
@@ -89,7 +132,7 @@ public class PlayerService(
             throw new NotFoundError("Сессия не найден.");
         
         if (!session.IsActive)
-            throw new ProvidedDataIsInvalidError( "Игра не началась");
+            throw new ProvidedDataIsInvalidError("Игра не началась.");
         
         if (session.GameMasterUserId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
@@ -99,6 +142,46 @@ public class PlayerService(
         player.CurrentYPosition = moveSomeoneDto.Y;
 
         await dataBaseContext.SaveChangesAsync();
+        
+        var update = new MoveUpdateDTO
+        {
+            SessionId = session.Id,
+            ANPC = null,
+            Player = new PlayerDTO
+            {
+                CharacterClassId = player.CharacterClassId,
+                CurrentXPosition = player.CurrentXPosition,
+                CurrentYPosition = player.CurrentYPosition,
+                HealthPoints = player.HealthPoints,
+                Level = player.Level,
+                Id = player.Id,
+                Name = player.Name,
+                SessionId = player.SessionId,
+                UserId = player.UserId
+            },
+            Y = moveSomeoneDto.Y,
+            X = moveSomeoneDto.X
+        };
+        
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = null,
+                Move = update,
+                SessionStarted = null
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
     }
 
     public async Task ChangeHealthPoints(int accessorUserId, int playerId, ChangeHealthPointsDTO changeHealthPointsDto)
@@ -112,7 +195,7 @@ public class PlayerService(
             throw new NotFoundError("Сессия не найден.");
         
         if (!session.IsActive)
-            throw new ProvidedDataIsInvalidError( "Игра не началась");
+            throw new ProvidedDataIsInvalidError("Игра не началась.");
         
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
@@ -133,7 +216,7 @@ public class PlayerService(
             throw new NotFoundError("Сессия не найден.");
         
         if (!session.IsActive)
-            throw new ProvidedDataIsInvalidError( "Игра не началась");
+            throw new ProvidedDataIsInvalidError("Игра не началась.");
         
         if (session.GameMasterUserId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
@@ -141,6 +224,79 @@ public class PlayerService(
         var skill = await dataBaseContext.Skills.FindAsync(useSkillDto.SkillId);
         if (skill is null)
             throw new NotFoundError("Скилл не найден.");
+        
+        var usedSkillMessage = new UsedSkillMessage
+        {
+            SessionId = player.SessionId,
+            SenderPlayerId = player.Id,
+            SenderANPCId = null,
+            SkillId = useSkillDto.SkillId,
+            Time = DateTimeOffset.Now
+        };
+        await dataBaseContext.UsedSkillMessages.AddAsync(usedSkillMessage);
+        await dataBaseContext.SaveChangesAsync();
+
+        var message = new Message
+        {
+            SessionId = player.SessionId,
+            TextMessageId = null,
+            RollMessageId = null,
+            UsedSkillMessageId = usedSkillMessage.Id
+        };
+        await dataBaseContext.Messages.AddAsync(message);
+        
+        var update = new MessageDTO
+        {
+            Id = message.Id,
+            SessionId = session.Id,
+            TextMessage = null,
+            RollMessage = null,
+            UsedSkillMessage = new UsedSkillMessageDTO
+            {
+                ANPC = null,
+                Player = new PlayerDTO
+                {
+                    Id = player.Id,
+                    UserId = player.UserId,
+                    SessionId = player.SessionId,
+                    Name = player.Name,
+                    Level = player.Level,
+                    HealthPoints = player.HealthPoints,
+                    CurrentXPosition = player.CurrentXPosition,
+                    CurrentYPosition = player.CurrentYPosition,
+                    CharacterClassId = player.CharacterClassId
+                },
+                Skill = new SkillDTO
+                {
+                    Id = skill.Id,
+                    GameId = skill.GameId,
+                    Name = skill.Name,
+                    Description = skill.Description,
+                    AvailableOnlyForCharacterClassId = skill.AvailableOnlyForCharacterClassId,
+                    AvailableOnlyForNonPlayableCharacterId = skill.AvailableOnlyForNonPlayableCharacterId
+                }
+            }
+        };
+        
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = update,
+                Move = null,
+                SessionStarted = null
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
     }
 
     public async Task<RollResultDTO> Roll(int accessorUserId, int playerId, RollDTO rollDto)
@@ -154,12 +310,82 @@ public class PlayerService(
             throw new NotFoundError("Сессия не найден.");
         
         if (!session.IsActive)
-            throw new ProvidedDataIsInvalidError( "Игра не началась");
+            throw new ProvidedDataIsInvalidError("Игра не началась.");
         
         if (accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var rollResult = await rollService.Roll(rollDto.Die);
+        
+        var rollMessage = new RollMessage
+        {
+            SessionId = player.SessionId,
+            SenderPlayerId = player.Id,
+            SenderANPCId = null,
+            Result = rollResult,
+            Die = rollDto.Die,
+            Time = DateTimeOffset.Now
+        };
+        await dataBaseContext.RollMessages.AddAsync(rollMessage);
+        await dataBaseContext.SaveChangesAsync();
+
+        var message = new Message
+        {
+            SessionId = player.SessionId,
+            TextMessageId = null,
+            RollMessageId = rollMessage.Id,
+            UsedSkillMessageId = null
+        };
+        await dataBaseContext.Messages.AddAsync(message);
+        
+        var update = new MessageDTO
+        {
+            Id = message.Id,
+            SessionId = session.Id,
+            TextMessage = null,
+            UsedSkillMessage = null,
+            RollMessage = new RollMessageDTO
+            {
+                SenderANPC = null,
+                SenderPlayer = new PlayerDTO
+                {
+                    Id = player.Id,
+                    UserId = player.UserId,
+                    SessionId = player.SessionId,
+                    Name = player.Name,
+                    Level = player.Level,
+                    HealthPoints = player.HealthPoints,
+                    CurrentXPosition = player.CurrentXPosition,
+                    CurrentYPosition = player.CurrentYPosition,
+                    CharacterClassId = player.CharacterClassId
+                },
+                Result = new RollResultDTO
+                {
+                    Result = rollResult,
+                    Die = rollDto.Die
+                }
+            }
+        };
+        
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = update,
+                Move = null,
+                SessionStarted = null
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
         
         return new RollResultDTO
         {

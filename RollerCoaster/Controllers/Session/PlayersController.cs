@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RollerCoaster.DataTransferObjects;
 using RollerCoaster.DataTransferObjects.Common;
-using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.DataTransferObjects.Session.Players;
+using RollerCoaster.DataTransferObjects.Session.Skills;
 using RollerCoaster.Services.Abstractions.Sessions;
 
 namespace RollerCoaster.Controllers.Session;
@@ -26,7 +25,6 @@ public class PlayersController(IPlayerService playerService): ControllerBase
     
     [HttpGet("{id:int}")]
     [ProducesResponseType<PlayerDTO>(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PlayerDTO>> Get(int id)
@@ -34,6 +32,17 @@ public class PlayersController(IPlayerService playerService): ControllerBase
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var playerDto = await playerService.Get(int.Parse(userId), id);
         return Ok(playerDto);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType<List<PlayerDTO>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<PlayerDTO>>> GetBySession([FromQuery] int sessionId)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        var playersDto = await playerService.GetBySession(int.Parse(userId), sessionId);
+        return Ok(playersDto);
     }
     
     [HttpPost("{id:int}/move")]

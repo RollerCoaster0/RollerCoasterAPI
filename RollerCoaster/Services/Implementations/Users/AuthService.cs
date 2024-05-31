@@ -19,21 +19,22 @@ public class AuthService(
             .Users.AnyAsync(u => u.Login == registerDto.Login);
         
         if (isLoginAlreadyInUse)
-            throw new ProvidedDataIsInvalidError("Такой логин уже в использовании");
+            throw new ProvidedDataIsInvalidError("Такой логин уже в использовании.");
         
         const string loginPattern = @"^[a-zA-Z][a-zA-Z\d_]{3,15}$";
         bool isLoginValid = Regex.IsMatch(registerDto.Login, loginPattern);
 
         if (!isLoginValid)
-            throw new ProvidedDataIsInvalidError("Логин должен быть от 4 до 16 символов и состоять из латиницы");
+            throw new ProvidedDataIsInvalidError("Логин должен быть от 4 до 16 символов и состоять из латиницы.");
 
-        string passwordPattern = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^+=]).*$";
+        const string passwordPattern = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^+=]).*$";
         bool isPasswordValid = Regex.IsMatch(registerDto.Password, passwordPattern);
 
         if (!isPasswordValid)
         {
             throw new ProvidedDataIsInvalidError(
-                "Пароль должен содержать хотя бы 1 заглавную и строчную букву, специальный символ, цифру и быть не менее 8 символов");
+                "Пароль должен содержать хотя бы 1 заглавную и строчную букву, " +
+                "специальный символ, цифру и быть не менее 8 символов.");
         }
         
         var user = new User

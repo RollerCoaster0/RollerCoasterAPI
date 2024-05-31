@@ -1,11 +1,10 @@
-using RollerCoaster.DataTransferObjects.Session.Chat;
-using RollerCoaster.DataTransferObjects.Session.Chat.Messages;
+using RollerCoaster.DataTransferObjects.Session.Messages;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 
 public interface IMessageService
 {
-    public Task<MessageDTO> Get(int accessorUserId, int messageId);
+    public Task<int> SendTextMessage(int senderUserId, SendTextMessageDTO sendTextMessageDto);
     
-    public Task<int> Create(int senderUserId, SendMessageDTO sendMessageDto);
+    public Task<List<MessageDTO>> GetBySession(int accessorUserId, GetMessagesDTO getMessagesDto);
 }

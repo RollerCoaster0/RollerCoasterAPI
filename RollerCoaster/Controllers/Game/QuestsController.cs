@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
 using RollerCoaster.DataTransferObjects.Game.Quests;
+using RollerCoaster.DataTransferObjects.Session.Quests;
 using RollerCoaster.Services.Abstractions.Game;
 using RollerCoaster.Services.Abstractions.Sessions;
 

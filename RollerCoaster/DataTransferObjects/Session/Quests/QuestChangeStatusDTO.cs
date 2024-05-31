@@ -1,4 +1,4 @@
-namespace RollerCoaster.DataTransferObjects.Game.Quests;
+namespace RollerCoaster.DataTransferObjects.Session.Quests;
 
 public class QuestChangeStatusDTO
 {

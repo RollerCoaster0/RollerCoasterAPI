@@ -10,7 +10,7 @@ public class RollService: IRollService
     public Task<int> Roll(int die)
     {
         if (!AvailableDice.Contains(die))
-            throw new NotFoundError("Дайс с заданным кол-во граней не найден");
+            throw new NotFoundError("Дайс с заданным количеством граней не найден.");
 
         return Task.FromResult(Random.Shared.Next(1, die + 1));
     }

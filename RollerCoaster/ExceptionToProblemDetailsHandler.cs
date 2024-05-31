@@ -7,7 +7,10 @@ namespace RollerCoaster;
 public class ExceptionToProblemDetailsHandler(ILogger<ExceptionToProblemDetailsHandler> logger):
     Microsoft.AspNetCore.Diagnostics.IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext, 
+        Exception exception, 
+        CancellationToken cancellationToken)
     {
         if (exception is NotFoundError notFoundErrorException)
         {
@@ -28,7 +31,6 @@ public class ExceptionToProblemDetailsHandler(ILogger<ExceptionToProblemDetailsH
                 Status = (int)HttpStatusCode.Forbidden
             }, cancellationToken: cancellationToken);
         }
-            
         
         else if (exception is ProvidedDataIsInvalidError providedDataIsInvalidErrorException)
         {

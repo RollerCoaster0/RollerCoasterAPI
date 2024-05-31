@@ -1,4 +1,4 @@
-namespace RollerCoaster.DataTransferObjects.Game.Skills;
+namespace RollerCoaster.DataTransferObjects.Session.Skills;
 
 public class UseSkillDTO
 {

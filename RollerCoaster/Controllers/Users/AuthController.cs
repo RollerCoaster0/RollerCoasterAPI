@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using RollerCoaster.DataTransferObjects.Users;
 using RollerCoaster.DataTransferObjects.Users.Auth;
 using RollerCoaster.Services.Abstractions.Users;
 

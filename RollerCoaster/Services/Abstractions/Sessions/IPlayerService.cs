@@ -1,13 +1,14 @@
-using RollerCoaster.DataTransferObjects;
-using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.DataTransferObjects.Session.Players;
+using RollerCoaster.DataTransferObjects.Session.Skills;
 
 namespace RollerCoaster.Services.Abstractions.Sessions;
 
 public interface IPlayerService
 {
     Task<PlayerDTO> Get(int accessorUserId, int playerId);
+    
+    Task<List<PlayerDTO>> GetBySession(int accessorUserId, int sessionId);
     
     Task<int> Create(int accessorUserId, PlayerCreationDTO playerCreationDto);
     

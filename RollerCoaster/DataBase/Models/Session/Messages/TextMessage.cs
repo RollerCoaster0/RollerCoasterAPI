@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RollerCoaster.DataBase.Models.Session.Chat;
+namespace RollerCoaster.DataBase.Models.Session.Messages;
 
-public class UsedSkillAction
+public class TextMessage
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required int SessionId { get; set; }
-    public required int? PlayerId { get; set; }
-    public required int? ANPCId { get; set; }
-    public required int SkillId { get; set; }
+    public required int SenderPlayerId { get; set; }
+    public Player SenderPlayer { get; set; } = null!;
+    public required string Text { get; set; }
     public required DateTimeOffset Time { get; set; }
 }
