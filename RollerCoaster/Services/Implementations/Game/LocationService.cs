@@ -56,8 +56,14 @@ public class LocationService(
             BasePlayersXPosition = null,
             BasePlayersYPosition = null
         };
+        
 
         await dataBaseContext.Locations.AddAsync(location);
+        await dataBaseContext.SaveChangesAsync();
+
+        if (locationCreationDto.IsBase == 1)
+            game.BaseLocationId = location.Id;
+        
         await dataBaseContext.SaveChangesAsync();
 
         return location.Id;
