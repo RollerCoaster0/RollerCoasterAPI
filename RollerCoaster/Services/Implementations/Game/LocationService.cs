@@ -69,9 +69,9 @@ public class LocationService(
         return location.Id;
     }
 
-    public async Task LoadMap(int accessorUserId, LocationMapLoadDTO locationMapLoadDto)
+    public async Task LoadMap(int accessorUserId, int id, LocationMapLoadDTO locationMapLoadDto)
     {
-        var location = await dataBaseContext.Locations.FindAsync(locationMapLoadDto.LocationId);
+        var location = await dataBaseContext.Locations.FindAsync(id);
         if (location is null)
             throw new NotFoundError("Локация не найдена.");
         

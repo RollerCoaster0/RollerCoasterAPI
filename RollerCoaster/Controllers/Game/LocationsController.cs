@@ -24,15 +24,15 @@ public class LocationsController(
         return Created("", new IdOfCreatedObjectDTO { Id = createdLocationId });
     }
     
-    [HttpPost("{locationId:int}/map")]
+    [HttpPost("{id:int}/map")]
     [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> LoadMap(LocationMapLoadDTO locationMapLoadDto)
+    public async Task<ActionResult> LoadMap(int id, LocationMapLoadDTO locationMapLoadDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        await locationService.LoadMap(int.Parse(userId), locationMapLoadDto); 
+        await locationService.LoadMap(int.Parse(userId), id, locationMapLoadDto); 
         return Ok();
     }
     

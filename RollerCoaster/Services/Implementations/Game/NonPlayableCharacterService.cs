@@ -60,9 +60,10 @@ public class NonPlayableCharacterService(
         return npc.Id;
     }
 
-    public async Task LoadAvatar(int accessorUserId, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
+    public async Task LoadAvatar(
+        int accessorUserId, int id, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
     {
-        var nonPlayableCharacter = await dataBaseContext.NonPlayableCharacters.FindAsync(nonPlayableCharacterAvatarLoadDto.NonPlayableCharacterId);
+        var nonPlayableCharacter = await dataBaseContext.NonPlayableCharacters.FindAsync(id);
         if (nonPlayableCharacter is null)
             throw new NotFoundError("NPC не найден.");
         
