@@ -17,11 +17,9 @@ public sealed class DataBaseContext: DbContext
     public DbSet<NonPlayableCharacter> NonPlayableCharacters { get; set; } = null!;
     public DbSet<CharacterClass> CharacterClasses { get; set; } = null!;
     public DbSet<Quest> Quests { get; set; } = null!;
-    public DbSet<Attributes> Attributes { get; set; } = null!;
-    public DbSet<Player> Players { get; set; } = null!;
-    public DbSet<ActiveNonPlayableCharacter> ActiveNonPlayableCharacters { get; set; } = null!;
-    public DbSet<InventoryItem> Inventories { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
+    public DbSet<ActiveNonPlayableCharacter> ActiveNonPlayableCharacters { get; set; } = null!;
+    public DbSet<Player> Players { get; set; } = null!;
     public DbSet<QuestStatus> QuestStatuses { get; set; } = null!;
     public DbSet<Message> Messages { get; set; } = null!;
     public DbSet<TextMessage> TextMessages { get; set; } = null!;
@@ -36,47 +34,21 @@ public sealed class DataBaseContext: DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // thanks god https://learn.microsoft.com/en-us/ef/core/modeling/relationships/one-to-many
-
-        modelBuilder.Entity<Message>()
-            .HasOne<TextMessage>()
-            .WithOne()
-            .HasForeignKey<Message>(m => m.TextMessageId)
-            .IsRequired(false);
-        
-        modelBuilder.Entity<Message>()
-            .HasOne<RollMessage>()
-            .WithOne()
-            .HasForeignKey<Message>(m => m.RollMessageId)
-            .IsRequired(false);
-        
-        modelBuilder.Entity<Message>()
-            .HasOne<UsedSkillMessage>()
-            .WithOne()
-            .HasForeignKey<Message>(m => m.UsedSkillMessageId)
-            .IsRequired(false);
-        
-        modelBuilder.Entity<NonPlayableCharacter>()
-            .HasMany<ActiveNonPlayableCharacter>()
-            .WithOne()
-            .HasForeignKey(e => e.NonPlayableCharacterId)
-            .IsRequired(true);
         
         modelBuilder.Entity<Quest>()
             .HasMany<QuestStatus>()
-            .WithOne()
-            .HasForeignKey(e => e.QuestId)
-            .IsRequired(true);
+            .WithOne();
         
         modelBuilder.Entity<Session>()
             .HasMany<TextMessage>()
-            .WithOne()
-            .HasForeignKey(e => e.SessionId)
-            .IsRequired(true);
+            .WithOne();
         
-        modelBuilder.Entity<Player>()
-            .HasMany<TextMessage>()
-            .WithOne()
-            .HasForeignKey(e => e.SenderPlayerId)
-            .IsRequired(true);
+        modelBuilder.Entity<Session>()
+            .HasMany<RollMessage>()
+            .WithOne();
+        
+        modelBuilder.Entity<Session>()
+            .HasMany<UsedSkillMessage>()
+            .WithOne();
     }
 }

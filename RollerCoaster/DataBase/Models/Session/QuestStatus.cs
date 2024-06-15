@@ -6,6 +6,6 @@ namespace RollerCoaster.DataBase.Models.Session;
 public class QuestStatus
 {
     public required int SessionId { get; set; }
-    public required int QuestId { get; set; }
+    public required int QuestId { get; set; } 
     public required string Status { get; set; } // started, finished
 }

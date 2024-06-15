@@ -42,7 +42,6 @@ public class PlayerService(
             CurrentXPosition = player.CurrentXPosition,
             CurrentYPosition = player.CurrentYPosition,
             HealthPoints = player.HealthPoints,
-            Level = player.Level,
             Id = player.Id,
             Name = player.Name,
             SessionId = player.SessionId,
@@ -71,7 +70,6 @@ public class PlayerService(
             CurrentXPosition = player.CurrentXPosition,
             CurrentYPosition = player.CurrentYPosition,
             HealthPoints = player.HealthPoints,
-            Level = player.Level,
             Id = player.Id,
             Name = player.Name,
             SessionId = player.SessionId,
@@ -91,6 +89,9 @@ public class PlayerService(
 
         if (isUserMemberOfSession)
             throw new ProvidedDataIsInvalidError("Вы уже состоите в этой игре.");
+        
+        if (session.GameMasterUserId == accessorUserId)
+            throw new ProvidedDataIsInvalidError("Вы уже состоите в этой игре в качестве ГМа.");
 
         var characterClass = await dataBaseContext.CharacterClasses.FindAsync(playerCreationDto.CharacterClassId);
         if (characterClass is null)
@@ -111,7 +112,6 @@ public class PlayerService(
             CurrentXPosition = location.BasePlayersXPosition!.Value,
             CurrentYPosition = location.BasePlayersYPosition!.Value,
             HealthPoints = 100,
-            Level = 1,
             Name = playerCreationDto.Name,
             SessionId = playerCreationDto.SessionId
         };
@@ -153,7 +153,6 @@ public class PlayerService(
                 CurrentXPosition = player.CurrentXPosition,
                 CurrentYPosition = player.CurrentYPosition,
                 HealthPoints = player.HealthPoints,
-                Level = player.Level,
                 Id = player.Id,
                 Name = player.Name,
                 SessionId = player.SessionId,
@@ -234,7 +233,6 @@ public class PlayerService(
             Time = DateTimeOffset.Now
         };
         await dataBaseContext.UsedSkillMessages.AddAsync(usedSkillMessage);
-        await dataBaseContext.SaveChangesAsync();
 
         var message = new Message
         {
@@ -244,6 +242,8 @@ public class PlayerService(
             UsedSkillMessageId = usedSkillMessage.Id
         };
         await dataBaseContext.Messages.AddAsync(message);
+        
+        await dataBaseContext.SaveChangesAsync();
         
         var update = new MessageDTO
         {
@@ -260,7 +260,6 @@ public class PlayerService(
                     UserId = player.UserId,
                     SessionId = player.SessionId,
                     Name = player.Name,
-                    Level = player.Level,
                     HealthPoints = player.HealthPoints,
                     CurrentXPosition = player.CurrentXPosition,
                     CurrentYPosition = player.CurrentYPosition,
@@ -327,7 +326,6 @@ public class PlayerService(
             Time = DateTimeOffset.Now
         };
         await dataBaseContext.RollMessages.AddAsync(rollMessage);
-        await dataBaseContext.SaveChangesAsync();
 
         var message = new Message
         {
@@ -337,6 +335,8 @@ public class PlayerService(
             UsedSkillMessageId = null
         };
         await dataBaseContext.Messages.AddAsync(message);
+        
+        await dataBaseContext.SaveChangesAsync();
         
         var update = new MessageDTO
         {
@@ -353,7 +353,6 @@ public class PlayerService(
                     UserId = player.UserId,
                     SessionId = player.SessionId,
                     Name = player.Name,
-                    Level = player.Level,
                     HealthPoints = player.HealthPoints,
                     CurrentXPosition = player.CurrentXPosition,
                     CurrentYPosition = player.CurrentYPosition,

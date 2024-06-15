@@ -17,7 +17,6 @@ public class LongPollController(ILongPollService longPollService): ControllerBas
     public async Task<ActionResult<LongPollUpdate>> Poll()
     {
         // TODO: add timeout support 
-        // TODO: push events to queue
         
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var update = await longPollService.DequeueUpdateAsync(int.Parse(userId));

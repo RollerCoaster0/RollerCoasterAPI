@@ -21,6 +21,8 @@ services:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: root
             POSTGRES_DB: RollerCoaster
+        ports:
+            - "7777:5432"
         volumes:
             - db:/var/lib/postgresql/data
     minio:
@@ -31,7 +33,7 @@ services:
             - "7071:7071"
         environment:
             MINIO_ROOT_USER: root
-            MINIO_ROOT_PASSWORD: rootrootroot
+            MINIO_ROOT_PASSWORD: root
             MINIO_DEFAULT_BUCKETS: images
         volumes:
             - minio-storage:/data

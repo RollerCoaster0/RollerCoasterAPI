@@ -9,8 +9,7 @@ namespace RollerCoaster.Controllers.Game;
 [Route("locations")]
 [ApiController]
 [Authorize]
-public class LocationsController(
-    ILocationService locationService): ControllerBase
+public class LocationsController(ILocationService locationService): ControllerBase
 {
     [HttpPost]
     [ProducesResponseType<IdOfCreatedObjectDTO>(StatusCodes.Status201Created)]

@@ -9,6 +9,10 @@ public class Skill
     public required int GameId { get; set; } 
     public required string Name { get; set; }
     public required string Description { get; set; }
+    
     public required int? AvailableOnlyForCharacterClassId { get; set; }
     public required int? AvailableOnlyForNonPlayableCharacterId { get; set; }
+    
+    // можно сделать нав-свойствами их
+    // if both null skill can be used by anyone
 }

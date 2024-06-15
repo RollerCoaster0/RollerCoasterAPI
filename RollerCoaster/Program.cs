@@ -102,7 +102,9 @@ builder.Services.AddMinio(configureClient => configureClient
 
 builder.Services.AddDbContext<DataBaseContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration["DataBase:ConnString"]);
+    options.UseNpgsql(
+        builder.Configuration["DataBase:ConnString"],
+        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)); // can produce performance issues
 });
 
 var app = builder.Build();

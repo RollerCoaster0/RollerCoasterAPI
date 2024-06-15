@@ -37,8 +37,7 @@ public class MessageService(
             Time = DateTimeOffset.Now
         };
         await dataBaseContext.TextMessages.AddAsync(textMessage);
-        await dataBaseContext.SaveChangesAsync();
-
+        
         var message = new Message
         {
             SessionId = sendTextMessageDto.SessionId,
@@ -47,6 +46,7 @@ public class MessageService(
             UsedSkillMessageId = null
         };
         await dataBaseContext.Messages.AddAsync(message);
+        
         await dataBaseContext.SaveChangesAsync();
         
         var update = new MessageDTO
@@ -63,7 +63,6 @@ public class MessageService(
                     UserId = player.UserId,
                     SessionId = player.SessionId,
                     Name = player.Name,
-                    Level = player.Level,
                     HealthPoints = player.HealthPoints,
                     CurrentXPosition = player.CurrentXPosition,
                     CurrentYPosition = player.CurrentYPosition,
@@ -150,7 +149,6 @@ public class MessageService(
                     UserId = m.RollMessage.SenderPlayer.UserId,
                     SessionId = m.RollMessage.SenderPlayer.SessionId,
                     Name = m.RollMessage.SenderPlayer.Name,
-                    Level = m.RollMessage.SenderPlayer.Level,
                     HealthPoints = m.RollMessage.SenderPlayer.HealthPoints,
                     CurrentXPosition = m.RollMessage.SenderPlayer.CurrentXPosition,
                     CurrentYPosition = m.RollMessage.SenderPlayer.CurrentYPosition,
@@ -180,7 +178,6 @@ public class MessageService(
                     UserId = m.UsedSkillMessage.SenderPlayer.UserId,
                     SessionId = m.UsedSkillMessage.SenderPlayer.SessionId,
                     Name = m.UsedSkillMessage.SenderPlayer.Name,
-                    Level = m.UsedSkillMessage.SenderPlayer.Level,
                     HealthPoints = m.UsedSkillMessage.SenderPlayer.HealthPoints,
                     CurrentXPosition = m.UsedSkillMessage.SenderPlayer.CurrentXPosition,
                     CurrentYPosition = m.UsedSkillMessage.SenderPlayer.CurrentYPosition,
@@ -216,7 +213,6 @@ public class MessageService(
                     UserId = m.TextMessage.SenderPlayer.UserId,
                     SessionId = m.TextMessage.SenderPlayer.SessionId,
                     Name = m.TextMessage.SenderPlayer.Name,
-                    Level = m.TextMessage.SenderPlayer.Level,
                     HealthPoints = m.TextMessage.SenderPlayer.HealthPoints,
                     CurrentXPosition = m.TextMessage.SenderPlayer.CurrentXPosition,
                     CurrentYPosition = m.TextMessage.SenderPlayer.CurrentYPosition,
