@@ -233,6 +233,7 @@ public class PlayerService(
             Time = DateTimeOffset.Now
         };
         await dataBaseContext.UsedSkillMessages.AddAsync(usedSkillMessage);
+        await dataBaseContext.SaveChangesAsync();
 
         var message = new Message
         {
@@ -242,7 +243,6 @@ public class PlayerService(
             UsedSkillMessageId = usedSkillMessage.Id
         };
         await dataBaseContext.Messages.AddAsync(message);
-        
         await dataBaseContext.SaveChangesAsync();
         
         var update = new MessageDTO
@@ -326,6 +326,7 @@ public class PlayerService(
             Time = DateTimeOffset.Now
         };
         await dataBaseContext.RollMessages.AddAsync(rollMessage);
+        await dataBaseContext.SaveChangesAsync();
 
         var message = new Message
         {
@@ -335,7 +336,6 @@ public class PlayerService(
             UsedSkillMessageId = null
         };
         await dataBaseContext.Messages.AddAsync(message);
-        
         await dataBaseContext.SaveChangesAsync();
         
         var update = new MessageDTO

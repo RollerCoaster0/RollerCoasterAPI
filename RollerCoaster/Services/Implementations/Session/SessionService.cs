@@ -73,6 +73,7 @@ public class SessionService(
             IsActive = false
         };
         await dataBaseContext.AddAsync(session);
+        await dataBaseContext.SaveChangesAsync();
         
         foreach (var npc in game.NonPlayableCharacters)
         {
@@ -86,7 +87,6 @@ public class SessionService(
             };
             await dataBaseContext.ActiveNonPlayableCharacters.AddAsync(anpc);
         }
-        
         await dataBaseContext.SaveChangesAsync();
         
         var update = new SessionDTO

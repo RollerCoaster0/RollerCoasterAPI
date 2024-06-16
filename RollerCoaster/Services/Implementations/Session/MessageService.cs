@@ -37,6 +37,7 @@ public class MessageService(
             Time = DateTimeOffset.Now
         };
         await dataBaseContext.TextMessages.AddAsync(textMessage);
+        await dataBaseContext.SaveChangesAsync();
         
         var message = new Message
         {
@@ -46,7 +47,6 @@ public class MessageService(
             UsedSkillMessageId = null
         };
         await dataBaseContext.Messages.AddAsync(message);
-        
         await dataBaseContext.SaveChangesAsync();
         
         var update = new MessageDTO
