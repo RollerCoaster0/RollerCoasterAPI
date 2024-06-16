@@ -7,18 +7,30 @@ namespace RollerCoaster.Services.Implementations.LongPoll;
 
 public class SimpleQueueLongPollService: ILongPollService
 {
-    private readonly ConcurrentDictionary<int, AsyncQueue<LongPollUpdate>> _queues = new();
+    private readonly ConcurrentDictionary<int, ConcurrentDictionary<string, AsyncQueue<LongPollUpdate>>> _queues = new();
     
-    public async Task<LongPollUpdate> DequeueUpdateAsync(int userId)
+    public async Task<LongPollResponse> DequeueUpdateAsync(int userId, string? deviceId)
     {
-        var queue = _queues.GetOrAdd(userId, new AsyncQueue<LongPollUpdate>());
-        return await queue.DequeueAsync();
+        var userQueues = _queues.GetOrAdd(userId, new ConcurrentDictionary<string, AsyncQueue<LongPollUpdate>>());
+
+        deviceId ??= Guid.NewGuid().ToString("N");
+        
+        var queue = userQueues.GetOrAdd(deviceId, new AsyncQueue<LongPollUpdate>());
+        return new LongPollResponse
+        {
+            Update = await queue.DequeueAsync(),
+            DeviceId = deviceId 
+        };
     }
 
     public Task EnqueueUpdateAsync(int userId, LongPollUpdate update)
     {
-        var queue = _queues.GetOrAdd(userId, new AsyncQueue<LongPollUpdate>());
-        queue.Enqueue(update);
+        var userQueues = _queues.GetOrAdd(userId, new ConcurrentDictionary<string, AsyncQueue<LongPollUpdate>>());
+
+        foreach (var queue in userQueues.Values)
+        {
+            queue.Enqueue(update);    
+        }
         
         return Task.CompletedTask;
     }

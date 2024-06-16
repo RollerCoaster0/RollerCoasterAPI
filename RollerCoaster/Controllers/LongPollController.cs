@@ -14,12 +14,12 @@ public class LongPollController(ILongPollService longPollService): ControllerBas
     
     [HttpGet]
     [ProducesResponseType<LongPollUpdate>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<LongPollUpdate>> Poll()
+    public async Task<ActionResult<LongPollUpdate>> Poll([FromQuery] string? deviceId)
     {
         // TODO: add timeout support 
         
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        var update = await longPollService.DequeueUpdateAsync(int.Parse(userId));
+        var update = await longPollService.DequeueUpdateAsync(int.Parse(userId), deviceId);
     
         return Ok(update);
     }

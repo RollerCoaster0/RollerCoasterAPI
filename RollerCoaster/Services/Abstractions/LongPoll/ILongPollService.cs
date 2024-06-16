@@ -4,7 +4,7 @@ namespace RollerCoaster.Services.Abstractions.LongPoll;
 
 public interface ILongPollService
 {
-    Task<LongPollUpdate> DequeueUpdateAsync(int userId);
+    Task<LongPollResponse> DequeueUpdateAsync(int userId, string? deviceId);
     
     Task EnqueueUpdateAsync(int userId, LongPollUpdate update);
 }
