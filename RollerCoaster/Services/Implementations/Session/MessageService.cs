@@ -66,7 +66,8 @@ public class MessageService(
                     HealthPoints = player.HealthPoints,
                     CurrentXPosition = player.CurrentXPosition,
                     CurrentYPosition = player.CurrentYPosition,
-                    CharacterClassId = player.CharacterClassId
+                    CharacterClassId = player.CharacterClassId,
+                    AvatarFilePath = player.AvatarFilePath
                 },
                 Text = textMessage.Text,
                 Time = textMessage.Time
@@ -152,7 +153,8 @@ public class MessageService(
                     HealthPoints = m.RollMessage.SenderPlayer.HealthPoints,
                     CurrentXPosition = m.RollMessage.SenderPlayer.CurrentXPosition,
                     CurrentYPosition = m.RollMessage.SenderPlayer.CurrentYPosition,
-                    CharacterClassId = m.RollMessage.SenderPlayer.CharacterClassId
+                    CharacterClassId = m.RollMessage.SenderPlayer.CharacterClassId,
+                    AvatarFilePath = m.RollMessage.SenderPlayer.AvatarFilePath
                 },
                 SenderANPC = m.RollMessage.SenderANPC is null ? null : new ActiveNonPlayableCharacterDTO
                 {
@@ -181,7 +183,8 @@ public class MessageService(
                     HealthPoints = m.UsedSkillMessage.SenderPlayer.HealthPoints,
                     CurrentXPosition = m.UsedSkillMessage.SenderPlayer.CurrentXPosition,
                     CurrentYPosition = m.UsedSkillMessage.SenderPlayer.CurrentYPosition,
-                    CharacterClassId = m.UsedSkillMessage.SenderPlayer.CharacterClassId
+                    CharacterClassId = m.UsedSkillMessage.SenderPlayer.CharacterClassId,
+                    AvatarFilePath = m.UsedSkillMessage.SenderPlayer.AvatarFilePath
                 },
                 ANPC = m.UsedSkillMessage.SenderANPC is null ? null : new ActiveNonPlayableCharacterDTO
                 {
@@ -216,7 +219,8 @@ public class MessageService(
                     HealthPoints = m.TextMessage.SenderPlayer.HealthPoints,
                     CurrentXPosition = m.TextMessage.SenderPlayer.CurrentXPosition,
                     CurrentYPosition = m.TextMessage.SenderPlayer.CurrentYPosition,
-                    CharacterClassId = m.TextMessage.SenderPlayer.CharacterClassId
+                    CharacterClassId = m.TextMessage.SenderPlayer.CharacterClassId,
+                    AvatarFilePath = m.TextMessage.SenderPlayer.AvatarFilePath
                 }
             }
         })
