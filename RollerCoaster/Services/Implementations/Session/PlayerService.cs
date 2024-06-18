@@ -235,6 +235,9 @@ public class PlayerService(
         
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
+
+        if (changeHealthPointsDto.HP is not (>= 0 and <= 100))
+            throw new ProvidedDataIsInvalidError("HP должно быть в диапазоне от 0 до 100");    
         
         player.HealthPoints = changeHealthPointsDto.HP;
         
