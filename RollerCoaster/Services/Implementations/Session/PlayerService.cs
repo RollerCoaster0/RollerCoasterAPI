@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Minio;
+using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Session;
 using RollerCoaster.DataBase.Models.Session.Messages;
+using RollerCoaster.DataTransferObjects.Game.NonPlayableCharacters;
 using RollerCoaster.DataTransferObjects.Game.Skills;
 using RollerCoaster.DataTransferObjects.LongPoll;
 using RollerCoaster.DataTransferObjects.LongPoll.Updates;
@@ -18,6 +21,8 @@ namespace RollerCoaster.Services.Implementations.Session;
 public class PlayerService(
     DataBaseContext dataBaseContext,
     IRollService rollService,
+    IFileTypeValidator fileTypeValidator,
+    IMinioClient minioClient,
     ILongPollService longPollService): IPlayerService
 {
     public async Task<PlayerDTO> Get(int accessorUserId, int playerId)
@@ -45,7 +50,8 @@ public class PlayerService(
             Id = player.Id,
             Name = player.Name,
             SessionId = player.SessionId,
-            UserId = player.UserId
+            UserId = player.UserId,
+            AvatarFilePath = player.AvatarFilePath
         };
     }
 
@@ -73,7 +79,8 @@ public class PlayerService(
             Id = player.Id,
             Name = player.Name,
             SessionId = player.SessionId,
-            UserId = player.UserId
+            UserId = player.UserId,
+            AvatarFilePath = player.AvatarFilePath
         }).ToList();
     }
 
@@ -113,12 +120,41 @@ public class PlayerService(
             CurrentYPosition = location.BasePlayersYPosition!.Value,
             HealthPoints = 100,
             Name = playerCreationDto.Name,
-            SessionId = playerCreationDto.SessionId
+            SessionId = playerCreationDto.SessionId,
+            AvatarFilePath = null
         };
         await dataBaseContext.AddAsync(player);
         await dataBaseContext.SaveChangesAsync();
         
         return player.Id;
+    }
+
+    public async Task LoadAvatar(int accessorUserId, int id, PlayerAvatarLoadDTO playerAvatarLoadDto)
+    {
+        var player = await dataBaseContext.Players.FindAsync(id);
+        if (player is null)
+            throw new NotFoundError("Игрок не найден.");
+        
+        if (player.UserId != accessorUserId)
+            throw new AccessDeniedError("У вас нет доступа к этому.");
+        
+        if (!fileTypeValidator.ValidateImageFileType(playerAvatarLoadDto.File))
+            throw new ProvidedDataIsInvalidError("Формат файла не поддерживается.");
+        
+        string uniqName = Guid.NewGuid().ToString("N");
+        string ext = playerAvatarLoadDto.File.FileName.Split(".").Last().ToLower();
+        string objectName = $"{uniqName}.{ext}";
+        
+        await minioClient.PutObjectAsync(
+            new PutObjectArgs()
+                .WithBucket("images")
+                .WithObject(objectName) 
+                .WithObjectSize(playerAvatarLoadDto.File.Length)
+                .WithStreamData(playerAvatarLoadDto.File.OpenReadStream()));
+        
+        player.AvatarFilePath = $"images/{objectName}";
+        
+        await dataBaseContext.SaveChangesAsync();
     }
 
     public async Task Move(int accessorUserId, int playerId, MoveSomeoneDTO moveSomeoneDto)
@@ -156,7 +192,8 @@ public class PlayerService(
                 Id = player.Id,
                 Name = player.Name,
                 SessionId = player.SessionId,
-                UserId = player.UserId
+                UserId = player.UserId,
+                AvatarFilePath = player.AvatarFilePath
             },
             Y = moveSomeoneDto.Y,
             X = moveSomeoneDto.X
@@ -263,7 +300,8 @@ public class PlayerService(
                     HealthPoints = player.HealthPoints,
                     CurrentXPosition = player.CurrentXPosition,
                     CurrentYPosition = player.CurrentYPosition,
-                    CharacterClassId = player.CharacterClassId
+                    CharacterClassId = player.CharacterClassId,
+                    AvatarFilePath = player.AvatarFilePath
                 },
                 Skill = new SkillDTO
                 {
@@ -303,6 +341,9 @@ public class PlayerService(
         var player = await dataBaseContext.Players.FindAsync(playerId);
         if (player is null)
             throw new NotFoundError("Игрок не найден.");
+        
+        if (accessorUserId != player.UserId)
+            throw new AccessDeniedError("У вас нет доступа к этому.");
 
         var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
         if (session is null)
@@ -310,9 +351,6 @@ public class PlayerService(
         
         if (!session.IsActive)
             throw new ProvidedDataIsInvalidError("Игра не началась.");
-        
-        if (accessorUserId != player.UserId)
-            throw new AccessDeniedError("У вас нет доступа к этому.");
         
         var rollResult = await rollService.Roll(rollDto.Die);
         
@@ -356,7 +394,8 @@ public class PlayerService(
                     HealthPoints = player.HealthPoints,
                     CurrentXPosition = player.CurrentXPosition,
                     CurrentYPosition = player.CurrentYPosition,
-                    CharacterClassId = player.CharacterClassId
+                    CharacterClassId = player.CharacterClassId,
+                    AvatarFilePath = player.AvatarFilePath
                 },
                 Result = new RollResultDTO
                 {

@@ -32,7 +32,7 @@ public class NonPlayableCharactersController(
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> LoadMap(
+    public async Task<ActionResult> LoadAvatar(
         int id, NonPlayableCharacterAvatarLoadDTO nonPlayableCharacterAvatarLoadDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;

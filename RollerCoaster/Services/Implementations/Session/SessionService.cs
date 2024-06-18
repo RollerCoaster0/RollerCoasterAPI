@@ -88,37 +88,6 @@ public class SessionService(
             await dataBaseContext.ActiveNonPlayableCharacters.AddAsync(anpc);
         }
         await dataBaseContext.SaveChangesAsync();
-        
-        var update = new SessionDTO
-        {
-            Id = session.Id,
-            Name = session.Name,
-            Description = session.Description,
-            GameMasterUserId = session.GameMasterUserId,
-            GameId = session.GameId,
-            CurrentPlayersLocationId = session.CurrentPlayersLocationId,
-            IsActive = session.IsActive
-        };
-
-        var membersOfSessionUserIds = await dataBaseContext.Players
-            .Where(p => p.SessionId == session.Id)
-            .Select(p => p.UserId)
-            .ToListAsync();
-        membersOfSessionUserIds.Add(session.GameMasterUserId);
-
-        var tasks = new List<Task>();
-        foreach (var userId in membersOfSessionUserIds)
-        {
-            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
-            {
-                QuestStatusUpdate = null,
-                NewMessage = null,
-                Move = null,
-                SessionStarted = update
-            });
-            tasks.Add(task);
-        }
-        await Task.WhenAll(tasks);
 
         return session.Id;
     }
@@ -141,16 +110,54 @@ public class SessionService(
 
     public async Task Start(int accessorUserId, int sessionId)
     {
-        var session = await dataBaseContext.Sessions.FindAsync(sessionId);
+        var session = await dataBaseContext.Sessions
+            .Include(s => s.Players)
+            .FirstOrDefaultAsync(s => s.Id == sessionId);
         
         if (session is null)
             throw new NotFoundError("Сессия не найдена.");
         
         if (session.GameMasterUserId != accessorUserId)
-            throw new AccessDeniedError("У вас нет доступа к этой сессии.");
-
+            throw new AccessDeniedError("У вас нет доступа к этому.");
+        
+        if (session.Players.Count == 0)
+            throw new ProvidedDataIsInvalidError("В сессии должен быть хотя бы один игрок.");
+        
+        if (session.Players.Any(p => p.AvatarFilePath is null))
+            throw new ProvidedDataIsInvalidError("У всех игроков должны быть аватарки.");
+        
         session.IsActive = true;
         await dataBaseContext.SaveChangesAsync();
+        
+        var update = new SessionDTO
+        {
+            Id = session.Id,
+            Name = session.Name,
+            Description = session.Description,
+            GameMasterUserId = session.GameMasterUserId,
+            GameId = session.GameId,
+            CurrentPlayersLocationId = session.CurrentPlayersLocationId,
+            IsActive = session.IsActive
+        };
+
+        var membersOfSessionUserIds = session.Players
+            .Select(p => p.UserId)
+            .ToList();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = null,
+                Move = null,
+                SessionStarted = update
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
     }
 
     public async Task ChangeLocation(int accessorUserId, int sessionId, ChangeLocationDTO locationDto)

@@ -10,4 +10,5 @@ public class PlayerDTO
     public required int CurrentXPosition { get; set; }
     public required int CurrentYPosition { get; set; }
     public required int CharacterClassId { get; set; }
+    public required string? AvatarFilePath { get; set; }
 }

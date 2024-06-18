@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RollerCoaster.DataTransferObjects.Common;
+using RollerCoaster.DataTransferObjects.Game.NonPlayableCharacters;
 using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.DataTransferObjects.Session.Players;
 using RollerCoaster.DataTransferObjects.Session.Skills;
@@ -21,6 +22,18 @@ public class PlayersController(IPlayerService playerService): ControllerBase
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
         var createdPlayerId = await playerService.Create(int.Parse(userId), playerCreationDto);
         return Created("", new IdOfCreatedObjectDTO { Id = createdPlayerId });
+    }
+    
+    [HttpPost("{id:int}/avatar")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> LoadAvatar(int id, PlayerAvatarLoadDTO playerAvatarLoadDto)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
+        await playerService.LoadAvatar(int.Parse(userId), id, playerAvatarLoadDto); 
+        return Ok();
     }
     
     [HttpGet("{id:int}")]

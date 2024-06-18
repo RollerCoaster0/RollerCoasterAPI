@@ -1,3 +1,4 @@
+using RollerCoaster.DataTransferObjects.Game.NonPlayableCharacters;
 using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.DataTransferObjects.Session.Players;
 using RollerCoaster.DataTransferObjects.Session.Skills;
@@ -11,6 +12,8 @@ public interface IPlayerService
     Task<List<PlayerDTO>> GetBySession(int accessorUserId, int sessionId);
     
     Task<int> Create(int accessorUserId, PlayerCreationDTO playerCreationDto);
+    
+    Task LoadAvatar(int accessorUserId, int id, PlayerAvatarLoadDTO playerAvatarLoadDto);
     
     Task Move(int accessorUserId, int playerId, MoveSomeoneDTO moveSomeoneDto);
     
