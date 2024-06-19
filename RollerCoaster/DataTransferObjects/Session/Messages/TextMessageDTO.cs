@@ -6,5 +6,4 @@ public class TextMessageDTO
 {
     public required PlayerDTO SenderPlayer { get; set; }
     public required string Text { get; set; }
-    public required DateTimeOffset Time { get; set; }
 }

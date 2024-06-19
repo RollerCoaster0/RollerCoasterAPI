@@ -7,7 +7,6 @@ public class TextMessage
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required int SessionId { get; set; }
-    public required DateTimeOffset Time { get; set; }
     
     public required string Text { get; set; }
     

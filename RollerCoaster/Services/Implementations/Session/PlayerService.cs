@@ -269,8 +269,7 @@ public class PlayerService(
             SessionId = player.SessionId,
             SenderPlayerId = player.Id,
             SenderANPCId = null,
-            SkillId = useSkillDto.SkillId,
-            Time = DateTimeOffset.Now
+            SkillId = useSkillDto.SkillId
         };
         await dataBaseContext.UsedSkillMessages.AddAsync(usedSkillMessage);
         await dataBaseContext.SaveChangesAsync();
@@ -280,7 +279,8 @@ public class PlayerService(
             SessionId = player.SessionId,
             TextMessageId = null,
             RollMessageId = null,
-            UsedSkillMessageId = usedSkillMessage.Id
+            UsedSkillMessageId = usedSkillMessage.Id,
+            Time = DateTimeOffset.Now
         };
         await dataBaseContext.Messages.AddAsync(message);
         await dataBaseContext.SaveChangesAsync();
@@ -289,6 +289,7 @@ public class PlayerService(
         {
             Id = message.Id,
             SessionId = session.Id,
+            Time = message.Time,
             TextMessage = null,
             RollMessage = null,
             UsedSkillMessage = new UsedSkillMessageDTO
@@ -363,8 +364,7 @@ public class PlayerService(
             SenderPlayerId = player.Id,
             SenderANPCId = null,
             Result = rollResult,
-            Die = rollDto.Die,
-            Time = DateTimeOffset.Now
+            Die = rollDto.Die
         };
         await dataBaseContext.RollMessages.AddAsync(rollMessage);
         await dataBaseContext.SaveChangesAsync();
@@ -374,7 +374,8 @@ public class PlayerService(
             SessionId = player.SessionId,
             TextMessageId = null,
             RollMessageId = rollMessage.Id,
-            UsedSkillMessageId = null
+            UsedSkillMessageId = null,
+            Time = DateTimeOffset.Now
         };
         await dataBaseContext.Messages.AddAsync(message);
         await dataBaseContext.SaveChangesAsync();
@@ -383,6 +384,7 @@ public class PlayerService(
         {
             Id = message.Id,
             SessionId = session.Id,
+            Time = message.Time,
             TextMessage = null,
             UsedSkillMessage = null,
             RollMessage = new RollMessageDTO

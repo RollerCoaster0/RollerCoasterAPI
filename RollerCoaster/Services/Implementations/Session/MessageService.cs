@@ -33,8 +33,7 @@ public class MessageService(
         {
             SessionId = sendTextMessageDto.SessionId,
             SenderPlayerId = player.Id,
-            Text = sendTextMessageDto.Text,
-            Time = DateTimeOffset.Now
+            Text = sendTextMessageDto.Text
         };
         await dataBaseContext.TextMessages.AddAsync(textMessage);
         await dataBaseContext.SaveChangesAsync();
@@ -42,6 +41,7 @@ public class MessageService(
         var message = new Message
         {
             SessionId = sendTextMessageDto.SessionId,
+            Time = DateTimeOffset.Now,
             TextMessageId = textMessage.Id,
             RollMessageId = null,
             UsedSkillMessageId = null
@@ -53,6 +53,7 @@ public class MessageService(
         {
             Id = message.Id,
             SessionId = session.Id,
+            Time = message.Time,
             UsedSkillMessage = null,
             RollMessage = null,
             TextMessage = new TextMessageDTO
@@ -69,8 +70,7 @@ public class MessageService(
                     CharacterClassId = player.CharacterClassId,
                     AvatarFilePath = player.AvatarFilePath
                 },
-                Text = textMessage.Text,
-                Time = textMessage.Time
+                Text = textMessage.Text
             }
         };
 
@@ -141,6 +141,7 @@ public class MessageService(
         {
             Id =  m.Id,
             SessionId = m.SessionId,
+            Time = m.Time,
             
             RollMessage = m.RollMessage is null ? null : new RollMessageDTO
             {
@@ -209,7 +210,6 @@ public class MessageService(
             TextMessage = m.TextMessage is null ? null : new TextMessageDTO
             {
                 Text = m.TextMessage.Text,
-                Time = m.TextMessage.Time,
                 SenderPlayer = new PlayerDTO
                 {
                     Id = m.TextMessage.SenderPlayer.Id,

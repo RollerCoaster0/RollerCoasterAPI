@@ -8,7 +8,6 @@ public class UsedSkillMessage
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public required int SessionId { get; set; }
-    public required DateTimeOffset Time { get; set; }
     
     public required int SkillId { get; set; }
     public Skill Skill { get; set; } = null!;

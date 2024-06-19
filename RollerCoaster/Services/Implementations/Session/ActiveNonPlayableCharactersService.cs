@@ -181,8 +181,7 @@ public class ActiveNonPlayableCharactersService(
             SessionId = anpc.SessionId,
             SenderPlayerId = null,
             SenderANPCId = anpc.Id,
-            SkillId = useSkillDto.SkillId,
-            Time = DateTimeOffset.Now
+            SkillId = useSkillDto.SkillId
         };
         await dataBaseContext.UsedSkillMessages.AddAsync(usedSkillMessage);
         await dataBaseContext.SaveChangesAsync();
@@ -190,6 +189,7 @@ public class ActiveNonPlayableCharactersService(
         var message = new Message
         {
             SessionId = anpc.SessionId,
+            Time = DateTimeOffset.Now,
             TextMessageId = null,
             RollMessageId = null,
             UsedSkillMessageId = usedSkillMessage.Id
@@ -201,6 +201,7 @@ public class ActiveNonPlayableCharactersService(
         {
             Id = message.Id,
             SessionId = session.Id,
+            Time = message.Time,
             TextMessage = null,
             RollMessage = null,
             UsedSkillMessage = new UsedSkillMessageDTO
@@ -272,8 +273,7 @@ public class ActiveNonPlayableCharactersService(
             SenderPlayerId = null,
             SenderANPCId = anpc.Id,
             Result = rollResult,
-            Die = rollDto.Die,
-            Time = DateTimeOffset.Now
+            Die = rollDto.Die
         };
         await dataBaseContext.RollMessages.AddAsync(rollMessage);
         await dataBaseContext.SaveChangesAsync();
@@ -281,6 +281,7 @@ public class ActiveNonPlayableCharactersService(
         var message = new Message
         {
             SessionId = anpc.Id,
+            Time = DateTimeOffset.Now,
             TextMessageId = null,
             RollMessageId = rollMessage.Id,
             UsedSkillMessageId = null
@@ -292,6 +293,7 @@ public class ActiveNonPlayableCharactersService(
         {
             Id = message.Id,
             SessionId = session.Id,
+            Time = message.Time,
             TextMessage = null,
             UsedSkillMessage = null,
             RollMessage = new RollMessageDTO
