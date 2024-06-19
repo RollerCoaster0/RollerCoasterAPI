@@ -28,11 +28,11 @@ public class LocationsController(ILocationService locationService): ControllerBa
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> LoadMap(int id, LocationMapLoadDTO locationMapLoadDto)
+    public async Task<ActionResult<LoadedMapDTO>> LoadMap(int id, LocationMapLoadDTO locationMapLoadDto)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == "id").Value;
-        await locationService.LoadMap(int.Parse(userId), id, locationMapLoadDto); 
-        return Ok();
+        var loadedMapDto = await locationService.LoadMap(int.Parse(userId), id, locationMapLoadDto); 
+        return Ok(loadedMapDto);
     }
     
     [HttpDelete("{id:int}")]
