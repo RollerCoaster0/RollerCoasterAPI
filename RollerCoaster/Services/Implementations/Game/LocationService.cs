@@ -3,6 +3,7 @@ using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
 using RollerCoaster.DataTransferObjects.Game.Locations;
+using RollerCoaster.Services.Abstractions;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
 
@@ -11,7 +12,8 @@ namespace RollerCoaster.Services.Implementations.Game;
 public class LocationService(
     DataBaseContext dataBaseContext,
     IFileTypeValidator fileTypeValidator,
-    IMinioClient minioClient
+    IMinioClient minioClient,
+    IImageCellPainter imageCellPainter
     ): ILocationService
 {
     public async Task<LocationDTO> Get(int id)
@@ -57,7 +59,6 @@ public class LocationService(
             BasePlayersYPosition = null
         };
         
-
         await dataBaseContext.Locations.AddAsync(location);
         await dataBaseContext.SaveChangesAsync();
 
@@ -69,7 +70,7 @@ public class LocationService(
         return location.Id;
     }
 
-    public async Task LoadMap(int accessorUserId, int id, LocationMapLoadDTO locationMapLoadDto)
+    public async Task<LoadedMapDTO> LoadMap(int accessorUserId, int id, LocationMapLoadDTO locationMapLoadDto)
     {
         var location = await dataBaseContext.Locations.FindAsync(id);
         if (location is null)
@@ -85,16 +86,21 @@ public class LocationService(
         if (!fileTypeValidator.ValidateImageFileType(locationMapLoadDto.File))
             throw new ProvidedDataIsInvalidError("Формат файла не поддерживается.");
         
+        await using var pictureWithCell = await imageCellPainter.DrawCell(
+            locationMapLoadDto.File.OpenReadStream(),
+            locationMapLoadDto.Width,
+            locationMapLoadDto.Height);
+        
         string uniqName = Guid.NewGuid().ToString("N");
-        string ext = locationMapLoadDto.File.FileName.Split(".").Last().ToLower();
+        const string ext = "png";
         string objectName = $"{uniqName}.{ext}";
         
         await minioClient.PutObjectAsync(
             new PutObjectArgs()
                 .WithBucket("images")
                 .WithObject(objectName) 
-                .WithObjectSize(locationMapLoadDto.File.Length)
-                .WithStreamData(locationMapLoadDto.File.OpenReadStream()));
+                .WithObjectSize(pictureWithCell.Length)
+                .WithStreamData(pictureWithCell));
 
         location.MapFilePath = $"images/{objectName}";
         location.Height = locationMapLoadDto.Height;
@@ -103,6 +109,11 @@ public class LocationService(
         location.BasePlayersYPosition = locationMapLoadDto.BasePlayersYPosition;
         
         await dataBaseContext.SaveChangesAsync();
+        
+        return new LoadedMapDTO
+        {
+            MapFilePath = location.MapFilePath
+        };
     }
 
     public async Task Delete(int accessorUserId, int id)
