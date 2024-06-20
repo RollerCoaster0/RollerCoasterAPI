@@ -2,6 +2,7 @@ using Minio;
 using Minio.DataModel.Args;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
+using RollerCoaster.DataTransferObjects.Game.Locations;
 using RollerCoaster.DataTransferObjects.Game.NonPlayableCharacters;
 using RollerCoaster.Services.Abstractions.Common;
 using RollerCoaster.Services.Abstractions.Game;
@@ -35,14 +36,27 @@ public class NonPlayableCharacterService(
 
     public async Task<int> Create(int accessorUserId, NonPlayableCharacterCreationDTO npcCreationDto)
     {
-        // TODO: Validation for BaseLocationId
         var game = await dataBaseContext.Games.FindAsync(npcCreationDto.GameId);
-        
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
+
+        var location = await dataBaseContext.Locations.FindAsync(npcCreationDto.BaseLocationId);
+        if (location is null)
+            throw new NotFoundError("Локация не найдена.");
+
+        if (location.GameId != npcCreationDto.GameId)
+            throw new ProvidedDataIsInvalidError("Эта локация не принадлежит этой игре.");
         
         if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");
+
+        if (npcCreationDto.BaseXPosition < 0 || npcCreationDto.BaseXPosition >= location.Width)
+            throw new ProvidedDataIsInvalidError(
+                "BaseXPosition должна быть в диапазоне от 0 до ширины карты.");
+
+        if (npcCreationDto.BaseYPosition < 0 || npcCreationDto.BaseYPosition >= location.Height)
+            throw new ProvidedDataIsInvalidError(
+                "BaseYPosition должна быть в диапазоне от 0 до высоты карты.");
 
         var npc = new NonPlayableCharacter
         {

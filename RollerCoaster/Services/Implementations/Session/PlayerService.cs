@@ -104,6 +104,9 @@ public class PlayerService(
         if (characterClass is null)
             throw new NotFoundError("Класс персонажа на найден.");
         
+        if (characterClass.GameId != session.GameId)
+            throw new ProvidedDataIsInvalidError("Данный класс персонажа не принадлежит этой игре.");
+        
         var game = await dataBaseContext.Games.FindAsync(session.GameId);
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
@@ -166,6 +169,15 @@ public class PlayerService(
         var session = await dataBaseContext.Sessions.FindAsync(player.SessionId);
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
+
+        var location = await dataBaseContext.Locations.
+            FirstAsync(l => l.Id == session.CurrentPlayersLocationId);
+
+        if (moveSomeoneDto.X < 0 || moveSomeoneDto.X >= location.Width)
+            throw new ProvidedDataIsInvalidError("X должен быть в диапазоне от 0 до ширины карты.");
+
+        if (moveSomeoneDto.Y < 0 || moveSomeoneDto.Y >= location.Height)
+            throw new ProvidedDataIsInvalidError("Y должен быть в диапазоне от 0 до высоты карты.");
         
         if (!session.IsActive)
             throw new ProvidedDataIsInvalidError("Игра не началась.");
@@ -173,7 +185,6 @@ public class PlayerService(
         if (session.GameMasterUserId != accessorUserId && accessorUserId != player.UserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
-        // TODO: validate coordinates 
         player.CurrentXPosition = moveSomeoneDto.X;
         player.CurrentYPosition = moveSomeoneDto.Y;
 
@@ -263,6 +274,9 @@ public class PlayerService(
         var skill = await dataBaseContext.Skills.FindAsync(useSkillDto.SkillId);
         if (skill is null)
             throw new NotFoundError("Скилл не найден.");
+        
+        if (skill.GameId != session.GameId)
+            throw new ProvidedDataIsInvalidError("Данный скилл не принадлежит этой игре.");
         
         var usedSkillMessage = new UsedSkillMessage
         {

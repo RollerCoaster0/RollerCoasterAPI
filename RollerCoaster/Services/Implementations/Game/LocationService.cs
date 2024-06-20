@@ -62,8 +62,16 @@ public class LocationService(
         await dataBaseContext.Locations.AddAsync(location);
         await dataBaseContext.SaveChangesAsync();
 
-        if (locationCreationDto.IsBase == 1)
-            game.BaseLocationId = location.Id;
+        switch (locationCreationDto.IsBase)
+        {
+            case 0:
+                break;
+            case 1:
+                game.BaseLocationId = location.Id;
+                break;
+            default:
+                throw new ProvidedDataIsInvalidError("IsBase должно быть либо 0, либо 1.");
+        }
         
         await dataBaseContext.SaveChangesAsync();
 
@@ -85,6 +93,19 @@ public class LocationService(
         
         if (!fileTypeValidator.ValidateImageFileType(locationMapLoadDto.File))
             throw new ProvidedDataIsInvalidError("Формат файла не поддерживается.");
+
+        if (locationMapLoadDto.Width < 1 || locationMapLoadDto.Height < 1)
+            throw new ProvidedDataIsInvalidError("Width и Height должны быть больше или равны 1.");
+
+        if (locationMapLoadDto.BasePlayersXPosition < 0 ||
+            locationMapLoadDto.BasePlayersXPosition >= locationMapLoadDto.Width)
+            throw new ProvidedDataIsInvalidError(
+                "BasePlayersXPosition должа быть в диапазоне от 0 до ширины карты.");
+
+        if (locationMapLoadDto.BasePlayersYPosition < 0 ||
+            locationMapLoadDto.BasePlayersYPosition >= locationMapLoadDto.Height)
+            throw new ProvidedDataIsInvalidError(
+                "BasePlayersYPosition должа быть в диапазоне от 0 до высоты карты.");
         
         await using var pictureWithCell = await imageCellPainter.DrawCell(
             locationMapLoadDto.File.OpenReadStream(),

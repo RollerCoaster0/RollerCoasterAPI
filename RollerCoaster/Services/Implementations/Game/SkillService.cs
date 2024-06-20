@@ -28,11 +28,34 @@ public class SkillService(DataBaseContext dataBaseContext): ISkillService
 
     public async Task<int> Create(int accessorUserId, SkillCreationDTO skillCreationDto) 
     {
-        // TODO: Validate AvailableForCharacterClassId
         var game = await dataBaseContext.Games.FindAsync(skillCreationDto.GameId);
         
         if (game is null)
             throw new NotFoundError("Игра не найдена.");
+
+        if (skillCreationDto.AvailableOnlyForNonPlayableCharacterId is not null)
+        {
+            var npc = await dataBaseContext.NonPlayableCharacters.FindAsync(
+                skillCreationDto.AvailableOnlyForNonPlayableCharacterId);
+
+            if (npc is null)
+                throw new NotFoundError("NPC не найден.");
+            
+            if (skillCreationDto.GameId != npc.GameId)
+                throw new ProvidedDataIsInvalidError("Этот NPC не принадлежит этой игре.");
+        }
+
+        if (skillCreationDto.AvailableOnlyForCharacterClassId is not null)
+        {
+            var characterClass = await dataBaseContext.CharacterClasses.FindAsync(
+                skillCreationDto.AvailableOnlyForCharacterClassId);
+
+            if (characterClass is null)
+                throw new NotFoundError("Класс персонажа не найден.");
+
+            if (skillCreationDto.GameId != characterClass.GameId)
+                throw new ProvidedDataIsInvalidError("Этот класс персонажа не принадлежит этой игре.");
+        }
         
         if (game.CreatorUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этой игре.");

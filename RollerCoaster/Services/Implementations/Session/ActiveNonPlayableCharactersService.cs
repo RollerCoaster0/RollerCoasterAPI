@@ -81,13 +81,24 @@ public class ActiveNonPlayableCharactersService(
         if (session is null)
             throw new NotFoundError("Сессия не найден.");
 
+        var npc = await dataBaseContext.NonPlayableCharacters.
+            FirstAsync(d => d.Id == anpc.NonPlayableCharacterId);
+
+        var location = await dataBaseContext.Locations.
+            FirstAsync(l => l.Id == npc.BaseLocationId);
+        
+        if (moveSomeoneDto.X < 0 || moveSomeoneDto.X >= location.Width)
+            throw new ProvidedDataIsInvalidError("X должен быть в диапазоне от 0 до ширины карты.");
+
+        if (moveSomeoneDto.Y < 0 || moveSomeoneDto.Y >= location.Height)
+            throw new ProvidedDataIsInvalidError("Y должен быть в диапазоне от 0 до высоты карты.");
+
         if (!session.IsActive)
             throw new ProvidedDataIsInvalidError("Игра не началась.");
         
         if (session.GameMasterUserId != accessorUserId)
             throw new AccessDeniedError("У вас нет доступа к этому.");
         
-        // TODO: validate coordinates 
         anpc.CurrentXPosition = moveSomeoneDto.X;
         anpc.CurrentYPosition = moveSomeoneDto.Y;
 
@@ -175,6 +186,9 @@ public class ActiveNonPlayableCharactersService(
         
         if (skill is null)
             throw new NotFoundError("Скилл не найден.");
+
+        if (skill.GameId != session.GameId)
+            throw new ProvidedDataIsInvalidError("Данный скилл не принадлежит этой игре.");
         
         var usedSkillMessage = new UsedSkillMessage
         {
