@@ -13,8 +13,8 @@ public class LongPollController(ILongPollService longPollService): ControllerBas
     // TODO: type hints
     
     [HttpGet]
-    [ProducesResponseType<LongPollUpdate>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<LongPollUpdate>> Poll([FromQuery] string? deviceId)
+    [ProducesResponseType<LongPollResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<LongPollResponse>> Poll([FromQuery] string? deviceId)
     {
         // TODO: add timeout support 
         
