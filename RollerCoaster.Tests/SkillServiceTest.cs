@@ -11,14 +11,14 @@ namespace RollerCoaster.Tests;
 public class SkillServiceTest
 { 
     [TestMethod]
-    public void FindCharacterClassTest()
+    public async Task FindCharacterClassTest()
     {
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
+        await using var context = new DataBaseContext(options);
         
-        using var context = new DataBaseContext(options);
-        context.Skills.Add(new Skill()
+        context.Skills.Add(new Skill
         {
             AvailableOnlyForCharacterClassId = 1,
             AvailableOnlyForNonPlayableCharacterId = 1,
@@ -26,7 +26,7 @@ public class SkillServiceTest
             GameId = 1,
             Name = "куку"
         });
-        context.Skills.Add(new Skill()
+        context.Skills.Add(new Skill
         {
             AvailableOnlyForCharacterClassId = 1,
             AvailableOnlyForNonPlayableCharacterId = 1,
@@ -34,9 +34,11 @@ public class SkillServiceTest
             GameId = 1,
             Name = "дыды"
         });
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+        
         var service = new SkillService(context);
-        var obj = service.Get(2).Result;
+        var obj = await service.Get(2);
+        
         Assert.AreEqual(obj.Description, "Пока");
     }
     
