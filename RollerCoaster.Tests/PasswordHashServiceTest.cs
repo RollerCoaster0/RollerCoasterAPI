@@ -10,20 +10,22 @@ public class PasswordHashServiceTest
     [TestMethod]
     public void HashGeneration()
     {
-        string password = "cxboi45lhojkfsdSh23@";
-        string samePassword = "cxboi45lhojkfsdSh23@";
+        const string password = "cxboi45lhojkfsdSh23@";
+        const string samePassword = "cxboi45lhojkfsdSh23@";
 
-        Assert.AreEqual(_passwordHashService.GenerateHash(password),
+        Assert.AreEqual(
+            _passwordHashService.GenerateHash(password),
             _passwordHashService.GenerateHash(samePassword));
     }
 
     [TestMethod]
     public void DifferentPasswords()
     {
-        string password = "cxboi45lhojkfsdSh23@";
-        string otherPassword = "cxboi45hojkfsdSh23@";
+        const string password = "cxboi45lhojkfsdSh23@";
+        const string otherPassword = "cxboi45hojkfsdSh23@";
 
-        Assert.AreNotEqual(_passwordHashService.GenerateHash(password),
+        Assert.AreNotEqual(
+            _passwordHashService.GenerateHash(password),
             _passwordHashService.GenerateHash(otherPassword));
     }
 }

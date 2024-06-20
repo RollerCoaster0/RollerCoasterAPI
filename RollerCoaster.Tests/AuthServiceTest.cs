@@ -27,18 +27,16 @@ public class AuthServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
-
+        await using var context = new DataBaseContext(options);
+        
+        var tokenService = new TokenService(Options.Create(_jwt));
+        var authService = new AuthService(context, tokenService, _passwordHashService);
+        
         var invalidNameRegisterDto = new RegisterDTO
         {
             Login = "a",
             Password = "cxboi45lhojkfsdSh23@"
         };
-
-
-        var authService = new AuthService(context, new TokenService(Options.Create(_jwt)), _passwordHashService);
-
         await authService.Register(invalidNameRegisterDto);
     }
 
@@ -49,20 +47,18 @@ public class AuthServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
+        await using var context = new DataBaseContext(options);
+        
+        var tokenService = new TokenService(Options.Create(_jwt));
+        var authService = new AuthService(context, tokenService, _passwordHashService);
 
         var invalidPasswordRegisterDto = new RegisterDTO
         {
             Login = "oihfasdlnk",
             Password = "123"
         };
-
-        var authService = new AuthService(context, new TokenService(Options.Create(_jwt)), _passwordHashService);
-
         await authService.Register(invalidPasswordRegisterDto);
     }
-
 
     [TestMethod]
     [ExpectedException(typeof(ProvidedDataIsInvalidError))]
@@ -71,17 +67,16 @@ public class AuthServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
+        await using var context = new DataBaseContext(options);
+        
+        var tokenService = new TokenService(Options.Create(_jwt));
+        var authService = new AuthService(context, tokenService, _passwordHashService);
 
         var registeredUser = new RegisterDTO
         {
             Login = "oihfasdlnk",
             Password = "cxboi45lhojkfsdSh23@"
         };
-        
-        var authService = new AuthService(context, new TokenService(Options.Create(_jwt)), _passwordHashService);
-
         await authService.Register(registeredUser);
         await authService.Register(registeredUser);
     }
@@ -93,17 +88,16 @@ public class AuthServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
-
+        await using var context = new DataBaseContext(options);
+        
+        var tokenService = new TokenService(Options.Create(_jwt));
+        var authService = new AuthService(context, tokenService, _passwordHashService);
+        
         var user = new LoginDTO
         {
             Login = "oihfasdlnk",
             Password = "cxboi45lhojkfsdSh23@"
         };
-        
-        var authService = new AuthService(context, new TokenService(Options.Create(_jwt)), _passwordHashService);
-
         await authService.Login(user);
     }
     
@@ -114,17 +108,16 @@ public class AuthServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
+        await using var context = new DataBaseContext(options);
 
-        using var context = new DataBaseContext(options);
+        var tokenService = new TokenService(Options.Create(_jwt));
+        var authService = new AuthService(context, tokenService, _passwordHashService);
 
         var user = new RegisterDTO
         {
             Login = "oihfasdlnk",
             Password = "cxboi45lhojkfsdSh23@"
         };
-        
-        var authService = new AuthService(context, new TokenService(Options.Create(_jwt)), _passwordHashService);
-
         await authService.Register(user);
 
         var incorrectUser = new LoginDTO
@@ -141,17 +134,16 @@ public class AuthServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
-
+        await using var context = new DataBaseContext(options);
+        
+        var tokenService = new TokenService(Options.Create(_jwt));
+        var authService = new AuthService(context, tokenService, _passwordHashService);
+        
         var user = new RegisterDTO
         {
             Login = "oihfasdlnk",
             Password = "cxboi45lhojkfsdSh23@"
         };
-        
-        var authService = new AuthService(context, new TokenService(Options.Create(_jwt)), _passwordHashService);
-
         await authService.Register(user);
 
         var login = new LoginDTO

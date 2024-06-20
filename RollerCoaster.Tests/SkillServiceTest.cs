@@ -8,7 +8,7 @@ using RollerCoaster.Services.Implementations.Game;
 namespace RollerCoaster.Tests;
 
 [TestClass]
-public class SkillServiceTest()
+public class SkillServiceTest
 { 
     [TestMethod]
     public void FindCharacterClassTest()
