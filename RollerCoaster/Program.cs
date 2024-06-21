@@ -21,9 +21,11 @@ using RollerCoaster.Services.Implementations.Session;
 using RollerCoaster.Services.Implementations.Users;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors();
 
 builder.Services.Configure<SiteConfiguration>(builder.Configuration);
 builder.Services.Configure<SiteConfiguration.JWTConfiguration>(builder.Configuration.GetSection("JWT"));
+
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExceptionToProblemDetailsHandler>();
@@ -57,7 +59,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddCors();
 
 builder.Services.AddSingleton<ILongPollService, SimpleQueueLongPollService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
