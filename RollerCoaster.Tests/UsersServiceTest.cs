@@ -22,8 +22,7 @@ public class UsersServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
+        await using var context = new DataBaseContext(options);
 
         await context.Users.AddAsync(_user);
 
@@ -37,8 +36,7 @@ public class UsersServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
-        using var context = new DataBaseContext(options);
+        await using var context = new DataBaseContext(options);
 
         await context.Users.AddAsync(_user);
 
@@ -53,7 +51,6 @@ public class UsersServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
         await using var context = new DataBaseContext(options);
 
         var usersService = new UsersService(context);
@@ -67,7 +64,6 @@ public class UsersServiceTest
         var options = new DbContextOptionsBuilder<DataBaseContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
             .Options;
-
         await using var context = new DataBaseContext(options);
 
         var usersService = new UsersService(context);
