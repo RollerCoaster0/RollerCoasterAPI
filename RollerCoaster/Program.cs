@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -112,17 +113,27 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
 
 var app = builder.Build();
 
+if (app.Environment.IsProduction())
+{
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    });
+}
+
 app.UseStatusCodePages();
 app.UseExceptionHandler();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()); // TODO: обезопасить
+
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors(policyBuilder => policyBuilder
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
+    // TODO: добавить что-то
 }
 
 app.UseAuthorization();

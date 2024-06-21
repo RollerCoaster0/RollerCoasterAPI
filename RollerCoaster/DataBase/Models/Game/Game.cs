@@ -6,10 +6,10 @@ public class Game
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public required int CreatorUserId { get; set; } // можно сделать нав-свойстом, но не надо
+    public required int CreatorUserId { get; set; } // TODO: можно сделать нав-свойстом, но не надо
     public required string Name { get; set; }
     public required string Description { get; set; }
-    public required int? BaseLocationId { get; set; }
+    public required int? BaseLocationId { get; set; } // TODO: можно сделать нав-свойстом, но хз надо ли
     
     public List<CharacterClass> Classes { get; set; } = [];
     public List<Item> Items { get; set; } = [];
