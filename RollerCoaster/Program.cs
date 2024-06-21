@@ -113,13 +113,11 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsProduction())
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    app.UseForwardedHeaders(new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-    });
-}
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseStatusCodePages();
 app.UseExceptionHandler();
@@ -129,6 +127,7 @@ app.UseSwaggerUI();
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
     .AllowAnyMethod()
+    .AllowCredentials()
     .AllowAnyHeader()); // TODO: обезопасить
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
