@@ -88,7 +88,9 @@ public class MessageService(
                 QuestStatusUpdate = null,
                 NewMessage = update,
                 Move = null,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }

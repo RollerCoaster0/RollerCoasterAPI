@@ -102,7 +102,9 @@ public class QuestStatusService(
                 QuestStatusUpdate = update,
                 NewMessage = null,
                 Move = null,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }
