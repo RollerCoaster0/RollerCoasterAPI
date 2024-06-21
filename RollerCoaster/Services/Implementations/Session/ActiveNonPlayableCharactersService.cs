@@ -135,7 +135,9 @@ public class ActiveNonPlayableCharactersService(
                 QuestStatusUpdate = null,
                 NewMessage = null,
                 Move = update,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }
@@ -164,6 +166,44 @@ public class ActiveNonPlayableCharactersService(
         anpc.HealthPoints = changeHealthPointsDto.HP;
         
         await dataBaseContext.SaveChangesAsync();
+        
+        var update = new ChangeHealthPointsUpdateDTO
+        {
+            SessionId = session.Id,
+            Player = null,
+            ANPC = new ActiveNonPlayableCharacterDTO
+            {
+                NonPlayableCharacterId = anpc.NonPlayableCharacterId,
+                CurrentXPosition = anpc.CurrentXPosition,
+                CurrentYPosition = anpc.CurrentYPosition,
+                HealthPoints = anpc.HealthPoints,
+                Id = anpc.Id,
+                SessionId = anpc.SessionId
+            },
+            NewHP = changeHealthPointsDto.HP
+        };
+
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = null,
+                Move = null,
+                SessionStarted = null,
+                ChangeHealthPoints = update,
+                PlayerJoinUpdate = null
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
     }
 
     public async Task UseSkill(int accessorUserId, int anpcId, UseSkillDTO useSkillDto)
@@ -256,7 +296,9 @@ public class ActiveNonPlayableCharactersService(
                 QuestStatusUpdate = null,
                 NewMessage = update,
                 Move = null,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }
@@ -344,7 +386,9 @@ public class ActiveNonPlayableCharactersService(
                 QuestStatusUpdate = null,
                 NewMessage = update,
                 Move = null,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }

@@ -224,7 +224,9 @@ public class PlayerService(
                 QuestStatusUpdate = null,
                 NewMessage = null,
                 Move = update,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }
@@ -253,6 +255,47 @@ public class PlayerService(
         player.HealthPoints = changeHealthPointsDto.HP;
         
         await dataBaseContext.SaveChangesAsync();
+        
+        var update = new ChangeHealthPointsUpdateDTO()
+        {
+            SessionId = session.Id,
+            ANPC = null,
+            Player = new PlayerDTO
+            {
+                CharacterClassId = player.CharacterClassId,
+                CurrentXPosition = player.CurrentXPosition,
+                CurrentYPosition = player.CurrentYPosition,
+                HealthPoints = player.HealthPoints,
+                Id = player.Id,
+                Name = player.Name,
+                SessionId = player.SessionId,
+                UserId = player.UserId,
+                AvatarFilePath = player.AvatarFilePath
+            },
+            NewHP = changeHealthPointsDto.HP
+        };
+        
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = null,
+                ChangeHealthPoints = update,
+                SessionStarted = null,
+                Move = null,
+                PlayerJoinUpdate = null
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
     }
 
     public async Task UseSkill(int accessorUserId, int playerId, UseSkillDTO useSkillDto)
@@ -347,7 +390,9 @@ public class PlayerService(
                 QuestStatusUpdate = null,
                 NewMessage = update,
                 Move = null,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }
@@ -438,7 +483,9 @@ public class PlayerService(
                 QuestStatusUpdate = null,
                 NewMessage = update,
                 Move = null,
-                SessionStarted = null
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = null
             });
             tasks.Add(task);
         }

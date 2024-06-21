@@ -1,5 +1,6 @@
 using RollerCoaster.DataTransferObjects.LongPoll.Updates;
 using RollerCoaster.DataTransferObjects.Session;
+using RollerCoaster.DataTransferObjects.Session.Common;
 using RollerCoaster.DataTransferObjects.Session.Messages;
 
 namespace RollerCoaster.DataTransferObjects.LongPoll;
@@ -13,4 +14,6 @@ public class LongPollUpdate
     public required QuestStatusUpdateDTO? QuestStatusUpdate { get; set; }
     public required SessionDTO? SessionStarted { get; set; }
     public required MoveUpdateDTO? Move { get; set; }
+    public required ChangeHealthPointsUpdateDTO? ChangeHealthPoints { get; set; }
+    public required PlayerJoinUpdateDTO? PlayerJoinUpdate { get; set; }
 }
