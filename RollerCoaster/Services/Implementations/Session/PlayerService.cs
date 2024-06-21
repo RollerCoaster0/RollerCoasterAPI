@@ -129,6 +129,45 @@ public class PlayerService(
         await dataBaseContext.AddAsync(player);
         await dataBaseContext.SaveChangesAsync();
         
+        var update = new PlayerJoinUpdateDTO
+        {
+            SessionId = session.Id,
+            Player = new PlayerDTO
+            {
+                CharacterClassId = player.CharacterClassId,
+                CurrentXPosition = player.CurrentXPosition,
+                CurrentYPosition = player.CurrentYPosition,
+                HealthPoints = player.HealthPoints,
+                Id = player.Id,
+                Name = player.Name,
+                SessionId = player.SessionId,
+                UserId = player.UserId,
+                AvatarFilePath = player.AvatarFilePath
+            }
+        };
+        
+        var membersOfSessionUserIds = await dataBaseContext.Players
+            .Where(p => p.SessionId == session.Id)
+            .Select(p => p.UserId)
+            .ToListAsync();
+        membersOfSessionUserIds.Add(session.GameMasterUserId);
+
+        var tasks = new List<Task>();
+        foreach (var userId in membersOfSessionUserIds)
+        {
+            Task task = longPollService.EnqueueUpdateAsync(userId, new LongPollUpdate
+            {
+                QuestStatusUpdate = null,
+                NewMessage = null,
+                Move = null,
+                SessionStarted = null,
+                ChangeHealthPoints = null,
+                PlayerJoinUpdate = update
+            });
+            tasks.Add(task);
+        }
+        await Task.WhenAll(tasks);
+        
         return player.Id;
     }
 
