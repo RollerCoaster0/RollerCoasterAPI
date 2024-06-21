@@ -128,7 +128,6 @@ app.UseSwaggerUI();
 app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
     .AllowAnyMethod()
-    .AllowCredentials()
     .AllowAnyHeader()); // TODO: обезопасить
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("DockerTesting"))
