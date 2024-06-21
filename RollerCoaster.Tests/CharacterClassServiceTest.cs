@@ -1,5 +1,5 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
 using RollerCoaster.DataTransferObjects.Game.CharacterClasses;
@@ -10,14 +10,33 @@ namespace RollerCoaster.Tests;
 [TestClass]
 public class CharacterClassServiceTest
 { 
+    private readonly Game _game = new()
+    {
+        Id = 1,
+        BaseLocationId = 1,
+        Classes = [],
+        CreatorUserId = 1,
+        Description = "test",
+        Items = [],
+        Locations = [],
+        Name = "test",
+        NonPlayableCharacters = [],
+        Quests = [],
+        Skills = []
+    };
+    
     [TestMethod]
     public async Task FindCharacterClassTest()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
+        await context.Games.AddAsync(_game);
         context.CharacterClasses.Add(new CharacterClass
         {
             Description = "Привет",
@@ -41,24 +60,15 @@ public class CharacterClassServiceTest
     [TestMethod]
     public async Task CreateTest()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
-        context.Games.Add(new Game
-        {
-            Classes = [],
-            Description = "Ппппп",
-            CreatorUserId = 1,
-            Items = [],
-            Locations = [],
-            Name = "ppp",
-            NonPlayableCharacters = [],
-            Quests = [],
-            Skills = [],
-            BaseLocationId = 0
-        });
+        context.Games.Add(_game);
         await context.SaveChangesAsync();
         
         var service = new CharacterClassService(context);
@@ -73,11 +83,15 @@ public class CharacterClassServiceTest
     [TestMethod]
     public async Task DeleteTest()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
+        context.Games.Add(_game);
         context.CharacterClasses.Add(new CharacterClass
         {
             Description = "Привет",
@@ -89,19 +103,6 @@ public class CharacterClassServiceTest
             Description = "Пока",
             GameId = 1,
             Name = "дыды"
-        });
-        context.Games.Add(new Game
-        {
-            Classes = [],
-            Description = "Ппппп",
-            CreatorUserId = 1,
-            Items = [],
-            Locations = [],
-            Name = "ppp",
-            NonPlayableCharacters = [],
-            Quests = [],
-            Skills = [],
-            BaseLocationId = 0
         });
         await context.SaveChangesAsync();
         

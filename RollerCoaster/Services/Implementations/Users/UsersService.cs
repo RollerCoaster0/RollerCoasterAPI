@@ -7,9 +7,9 @@ namespace RollerCoaster.Services.Implementations.Users;
 
 public class UsersService(DataBaseContext dataBaseContext): IUsersService
 {
-    public async Task<GetMeDTO> GetMe(int userId)
+    public async Task<GetMeDTO> GetMe(int accessorUserId)
     {
-        var user = await dataBaseContext.Users.FindAsync(userId);
+        var user = await dataBaseContext.Users.FindAsync(accessorUserId);
         
         if (user is null)
             throw new NotFoundError("Пользователь не найден.");

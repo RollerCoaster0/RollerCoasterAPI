@@ -1,5 +1,5 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models;
 using RollerCoaster.Services.Abstractions.Common;
@@ -19,12 +19,16 @@ public class UsersServiceTest
     [TestMethod]
     public async Task GetMeCorrect()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 
         await context.Users.AddAsync(_user);
+        await context.SaveChangesAsync();
 
         var usersService = new UsersService(context);
         await usersService.GetMe(1);
@@ -33,12 +37,16 @@ public class UsersServiceTest
     [TestMethod]
     public async Task GetUserCorrect()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 
         await context.Users.AddAsync(_user);
+        await context.SaveChangesAsync();
 
         var usersService = new UsersService(context);
         await usersService.GetMe(1);
@@ -48,8 +56,11 @@ public class UsersServiceTest
     [ExpectedException(typeof(NotFoundError))]
     public async Task GetMeNotFoundId()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 
@@ -61,8 +72,11 @@ public class UsersServiceTest
     [ExpectedException(typeof(NotFoundError))]
     public async Task GetUserNotFoundId()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 

@@ -1,5 +1,5 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataTransferObjects.Users.Auth;
@@ -24,8 +24,11 @@ public class AuthServiceTest
     [ExpectedException(typeof(ProvidedDataIsInvalidError))]
     public async Task RegisterWithInvalidLogin()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
@@ -44,8 +47,11 @@ public class AuthServiceTest
     [ExpectedException(typeof(ProvidedDataIsInvalidError))]
     public async Task RegisterWithInvalidPassword()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
@@ -64,8 +70,11 @@ public class AuthServiceTest
     [ExpectedException(typeof(ProvidedDataIsInvalidError))]
     public async Task RegisterWithExistingName()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
@@ -85,8 +94,11 @@ public class AuthServiceTest
     [ExpectedException(typeof(AccessDeniedError))]
     public async Task LoginWithUnknownName()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
@@ -105,8 +117,11 @@ public class AuthServiceTest
     [ExpectedException(typeof(AccessDeniedError))]
     public async Task LoginWithIncorrectPassword()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 
@@ -131,8 +146,11 @@ public class AuthServiceTest
     [TestMethod]
     public async Task CorrectRegisterAndLogin()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         

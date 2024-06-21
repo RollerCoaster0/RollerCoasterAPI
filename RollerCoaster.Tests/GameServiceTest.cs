@@ -1,5 +1,5 @@
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using RollerCoaster.DataBase;
 using RollerCoaster.DataBase.Models.Game;
 using RollerCoaster.DataTransferObjects.Game;
@@ -11,28 +11,33 @@ namespace RollerCoaster.Tests;
 [TestClass]
 public class GameServiceTest
 {
+    private readonly Game _game = new()
+    {
+        Id = 1,
+        BaseLocationId = 1,
+        Classes = [],
+        CreatorUserId = 1,
+        Description = "test",
+        Items = [],
+        Locations = [],
+        Name = "test",
+        NonPlayableCharacters = [],
+        Quests = [],
+        Skills = []
+    };
+    
     [TestMethod]
     public async Task GetCorrect()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 
-        await context.Games.AddAsync(new Game
-        {
-            Id = 1,
-            BaseLocationId = 1,
-            Classes = [],
-            CreatorUserId = 1,
-            Description = "test",
-            Items = [],
-            Locations = [],
-            Name = "test",
-            NonPlayableCharacters = [],
-            Quests = [],
-            Skills = []
-        });
+        await context.Games.AddAsync(_game);
         await context.SaveChangesAsync();
 
         var gameService = new GameService(context);
@@ -45,8 +50,11 @@ public class GameServiceTest
     [ExpectedException(typeof(NotFoundError))]
     public async Task GetNotFound()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
 
@@ -57,8 +65,11 @@ public class GameServiceTest
     [TestMethod]
     public async Task CreateTest()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
@@ -70,31 +81,21 @@ public class GameServiceTest
         });
 
         var test = await context.Games.FindAsync(game.Id);
-        Assert.AreEqual(game.Id, test.Id);
+        Assert.AreEqual(game.Id, test?.Id);
     }
 
     [TestMethod]
     public async Task DeleteCorrect()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
-        await context.Games.AddAsync(new Game
-        {
-            Id = 1,
-            BaseLocationId = 1,
-            Classes = [],
-            CreatorUserId = 1,
-            Description = "test",
-            Items = [],
-            Locations = [],
-            Name = "test",
-            NonPlayableCharacters = [],
-            Quests = [],
-            Skills = []
-        });
+        await context.Games.AddAsync(_game);
         await context.SaveChangesAsync();
         
         var gameService = new GameService(context);
@@ -107,8 +108,11 @@ public class GameServiceTest
     [ExpectedException(typeof(NotFoundError))]
     public async Task DeleteNotFound()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
@@ -120,25 +124,15 @@ public class GameServiceTest
     [ExpectedException(typeof(AccessDeniedError))]
     public async Task DeleteAccessDenied()
     {
+        await using var connection = new SqliteConnection("Filename=:memory:");
+        await connection.OpenAsync();
+        
         var options = new DbContextOptionsBuilder<DataBaseContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase", new InMemoryDatabaseRoot())
+            .UseSqlite(connection)
             .Options;
         await using var context = new DataBaseContext(options);
         
-        await context.Games.AddAsync(new Game
-        {
-            Id = 1,
-            BaseLocationId = 1,
-            Classes = [],
-            CreatorUserId = 1,
-            Description = "test",
-            Items = [],
-            Locations = [],
-            Name = "test",
-            NonPlayableCharacters = [],
-            Quests = [],
-            Skills = []
-        });
+        await context.Games.AddAsync(_game);
         await context.SaveChangesAsync();
         
         var gameService = new GameService(context);
